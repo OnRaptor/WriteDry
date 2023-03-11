@@ -15,6 +15,9 @@
       d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <c:FileNameToResourcePathConvertor x:Key="FileNameToResourcePathConvertor"/>
+        <DataTemplate x:Key="ComboBoxItem">
+            <TextBlock Text="{Binding Title}"/>
+        </DataTemplate>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -53,16 +56,21 @@
             </StackPanel>
             <ui:SimpleStackPanel Margin="5 0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Spacing="5">
                 <TextBox Text="{Binding SearchText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200" ui:ControlHelper.PlaceholderText="Поиск" Height="30" VerticalAlignment="Top"/>
-                <ComboBox ui:ControlHelper.PlaceholderText="Сортировка" Width="200">
-                    <sys:String>По возрастанию</sys:String>
-                    <sys:String>По убыванию</sys:String>
-                    <sys:String>По  стоимости</sys:String>
+                <ComboBox 
+                    SelectedItem="{Binding SelectedSort}"
+                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    ui:ControlHelper.PlaceholderText="Сортировка" Width="200">
+                    <vm:SortItem Title="По возрастанию" SortProduct="Asc"/>
+                    <vm:SortItem Title="По убыванию" SortProduct="Desc"/>
                 </ComboBox>
-                <ComboBox ui:ControlHelper.PlaceholderText="Размер скидки" Width="200">
-                    <sys:String>Все  диапазоны</sys:String>
-                    <sys:String>0-9,99%</sys:String>
-                    <sys:String>10-14,99%</sys:String>
-                    <sys:String>15% и более</sys:String>
+                <ComboBox
+                    SelectedItem="{Binding SelectedFilter}" 
+                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    ui:ControlHelper.PlaceholderText="Размер скидки" Width="200">
+                    <vm:FilterItem Title="Все диапазоны" FilterProduct="All"/>
+                    <vm:FilterItem Title="0-9,99%" FilterProduct="Low"/>
+                    <vm:FilterItem Title="10-14,99%, " FilterProduct="Medium"/>
+                    <vm:FilterItem Title="15% и более" FilterProduct="High"/>
                 </ComboBox>
             </ui:SimpleStackPanel>
         </DockPanel>
@@ -71,18 +79,27 @@
             <ItemsControl ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel Background="White"  LastChildFill="True">
+                        <DockPanel Background="{Binding DisplayedColor,Mode=OneTime}"  LastChildFill="True">
                             <StackPanel Orientation="Horizontal">
                                 <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
-                                    <Image Source="{Binding ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
+                                    <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
                                 </Border>
                                 <StackPanel Margin="10 0">
-                                    <TextBlock Text="{Binding ProductName}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding ProductDescription}"/>
-                                    <TextBlock Text="{Binding ProductManufacturer}"/>
-                                    <TextBlock Text="{Binding ProductCost}"/>
+                                    <TextBlock Text="{Binding Product.ProductNameNavigation.ProductName}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Product.ProductDescription}"/>
+                                    <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
+                                    <TextBlock>
+                                        <TextBlock.Inlines>
+                                            <Run Text="Цена: "/>
+                                            <TextBlock 
+                                                 Text="{Binding Product.ProductCost, StringFormat={}{0:C}, ConverterCulture=ru-RU}"
+                                                 Visibility="{Binding ShouldDisplayFakeCost,Mode=OneTime, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
+                                                 TextDecorations="Strikethrough"/>
+                                            <Run Text="{Binding CalculatedCostWithDiscount,Mode=OneTime, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
+                                        </TextBlock.Inlines>
+                                    </TextBlock>
                                 </StackPanel>
-                                <TextBlock Text="{Binding ProductDiscountAmount}"  VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
                             </StackPanel>
                             <DockPanel.ContextMenu>
                                 <ContextMenu>
