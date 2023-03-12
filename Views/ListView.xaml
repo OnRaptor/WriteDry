@@ -4,7 +4,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WriteDry.Views"
-      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:s="https://github.com/canton7/Stylet"
       xmlns:ui="http://schemas.modernwpf.com/2019"
       mc:Ignorable="d"
@@ -32,7 +31,8 @@
                             <MenuItem Header="{Binding UserName}"/>
                             <MenuItem
                                 Visibility="{Binding CanCreateOrder, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
-                                Header="Оформить заказ"/>
+                                Command="{s:Action GoToOrders}"
+                                Header="Корзина"/>
                         </ui:MenuFlyout>
                     </ui:FlyoutService.Flyout>
 
@@ -79,34 +79,36 @@
             <ItemsControl ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <DockPanel Background="{Binding DisplayedColor,Mode=OneTime}"  LastChildFill="True">
-                            <StackPanel Orientation="Horizontal">
-                                <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
-                                    <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
-                                </Border>
-                                <StackPanel Margin="10 0">
-                                    <TextBlock Text="{Binding Product.ProductNameNavigation.ProductName}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding Product.ProductDescription}"/>
-                                    <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
-                                    <TextBlock>
-                                        <TextBlock.Inlines>
-                                            <Run Text="Цена: "/>
-                                            <TextBlock 
+                        <Border Background="{Binding DisplayedColor,Mode=OneTime}"  BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
+                                        <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
+                                    </Border>
+                                    <StackPanel Margin="10 0">
+                                        <TextBlock Text="{Binding Product.ProductNameNavigation.ProductName}" FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Product.ProductDescription}"/>
+                                        <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
+                                        <TextBlock>
+                                            <TextBlock.Inlines>
+                                                <Run Text="Цена: "/>
+                                                <TextBlock 
                                                  Text="{Binding Product.ProductCost, StringFormat={}{0:C}, ConverterCulture=ru-RU}"
                                                  Visibility="{Binding ShouldDisplayFakeCost,Mode=OneTime, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
                                                  TextDecorations="Strikethrough"/>
-                                            <Run Text="{Binding CalculatedCostWithDiscount,Mode=OneTime, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
-                                        </TextBlock.Inlines>
+                                                <Run Text="{Binding CalculatedCostWithDiscount,Mode=OneTime, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
+                                            </TextBlock.Inlines>
                                     </TextBlock>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
                                 </StackPanel>
-                                <TextBlock Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
-                            </StackPanel>
-                            <DockPanel.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Добавить к заказу"/>
-                                </ContextMenu>
-                            </DockPanel.ContextMenu>
-                        </DockPanel>
+                                <DockPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Добавить к заказу" Command="{s:Action AddItemToCart}" CommandParameter="{Binding}"/>
+                                    </ContextMenu>
+                                </DockPanel.ContextMenu>
+                            </DockPanel>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

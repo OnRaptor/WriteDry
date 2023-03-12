@@ -6,46 +6,87 @@
              xmlns:local="clr-namespace:WriteDry.Views"
              xmlns:s="https://github.com/canton7/Stylet"    
              xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:vm="clr-namespace:WriteDry.ViewModels"     
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             d:DataContext="{d:DesignInstance vm:OrderViewModel}"
              mc:Ignorable="d" 
+             xmlns:c="clr-namespace:WriteDry.Convertor"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <c:FileNameToResourcePathConvertor x:Key="FileNameToResourcePathConvertor"/>
+        <DataTemplate x:Key="ComboBoxItem">
+            <TextBlock Text="{Binding Title}"/>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <ui:AppBarButton HorizontalAlignment="Right" Width="100" Padding="0" Label="Потвердить">
-            <ui:AppBarButton.Icon>
-                <ui:PathIcon Data="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
-            </ui:AppBarButton.Icon>
-        </ui:AppBarButton>
-        
-        <ui:AutoSuggestBox VerticalAlignment="Center" ui:ControlHelper.PlaceholderText="Выберите пункт выдачи" Width="200" HorizontalAlignment="Center"/>
+        <DockPanel LastChildFill="True">
+            <StackPanel>
+                <TextBlock Text="{Binding AuthorizedUser, Mode=OneTime}"/>
+                <TextBlock Text="{Binding OrderCost, Mode=OneWay, StringFormat={}Итоговая цена:{0:C}, ConverterCulture=ru-RU}"/>
+                <TextBlock Text="{Binding TotalDiscountAmount, Mode=OneWay, StringFormat={}Скидка:{0}%, ConverterCulture=ru-RU}"/>
+            </StackPanel>
 
-        <StackPanel>
-            <Label>Гость</Label>
-            <Label>Итого:10000рублей</Label>
-            <Label>Скидка:230рублей</Label>
-        </StackPanel>
+            <ui:AppBarButton Command="{s:Action CreateOrder}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="100" Padding="0" Label="Потвердить">
+                <ui:AppBarButton.Icon>
+                    <ui:PathIcon Data="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                </ui:AppBarButton.Icon>
+            </ui:AppBarButton>
+
+            <ui:AutoSuggestBox
+                VerticalAlignment="Center"
+                ui:ControlHelper.PlaceholderText="Выберите пункт выдачи"
+                Width="200"
+                GotFocus="{s:Action OnPickupPointFocus}"
+                SuggestionChosen="{s:Action OnPickupPointSuggestionChanged}"
+                TextChanged="{s:Action OnPickupPointFinding}"
+                DisplayMemberPath="FullAddress"
+                TextMemberPath="FullAddress"
+                QueryIcon="Find"
+                HorizontalAlignment="Center">
+            </ui:AutoSuggestBox>
+        </DockPanel>
         
         <ui:ScrollViewerEx Grid.Row="1" ui:ScrollViewerHelper.AutoHideScrollBars="True">
-            <ItemsControl>
-                <ItemsControl.Items>
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
-                                <Image Source="/Assets/logo.png"/>
-                            </Border>
-                            <StackPanel Margin="10 0">
-                                <Label FontWeight="Bold">Наименование товара</Label>
-                                <Label>Описание товара</Label>
-                                <Label>Производитель</Label>
-                                <Label>Цена</Label>
-                            </StackPanel>
-                            <Label VerticalAlignment="Center">Размер скидки</Label>
-                            <Button Margin="10 0">Удалить товар</Button>
-                        </StackPanel>
-                    </StackPanel>
-                </ItemsControl.Items>
+            <ItemsControl ItemsSource="{Binding CartItems}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{Binding DisplayedColor,Mode=OneTime}"  BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal">
+                                    <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
+                                        <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
+                                    </Border>
+                                    <StackPanel Margin="10 0">
+                                        <TextBlock Text="{Binding Product.ProductNameNavigation.ProductName}" FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Product.ProductDescription}"/>
+                                        <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
+                                        <TextBlock>
+                                            <TextBlock.Inlines>
+                                                <Run Text="Цена: "/>
+                                                <TextBlock 
+                                                 Text="{Binding Product.ProductCost, StringFormat={}{0:C}, ConverterCulture=ru-RU}"
+                                                 Visibility="{Binding ShouldDisplayFakeCost,Mode=OneTime, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
+                                                 TextDecorations="Strikethrough"/>
+                                                <Run Text="{Binding CalculatedCostWithDiscount,Mode=OneTime, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
+                                            </TextBlock.Inlines>
+                                    </TextBlock>
+                                        <ui:NumberBox Minimum="1" ValueChanged="{s:Action CalculateStatistic}" HorizontalAlignment="Left" Width="140" SpinButtonPlacementMode="Inline" Header="Количество:" Value="{Binding Count}"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <DockPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Удалить товар" Command="{s:Action RemoveItem}" CommandParameter="{Binding}"/>
+                                    </ContextMenu>
+                                </DockPanel.ContextMenu>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ui:ScrollViewerEx>
     </Grid>

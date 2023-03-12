@@ -1,7 +1,10 @@
 ﻿using Stylet;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
+using WriteDry.Models;
 using WriteDry.Services;
+using WriteDry.Utils;
 using WriteDry.ViewModels.Component;
 
 namespace WriteDry.ViewModels {
@@ -32,17 +35,19 @@ namespace WriteDry.ViewModels {
 
 		private NavigationController navigationController;
 		private ApplicationContext dbContext;
+		private ClientService _clientService;
 		private List<ProductViewModel> _productsCache; //data from db
 
-		public ListViewModel(NavigationController _navController, UserService userService, ApplicationContext dbContext) {
+		public ListViewModel(NavigationController _navController, ClientService clientService, ApplicationContext dbContext) {
 			navigationController = _navController;
 			this.dbContext = dbContext;
-			userService.onAuthChanged += HandleAuthState;
+			this._clientService = clientService;
+			clientService.OnAuthStateChanged += HandleAuthState;
 		}
 
-		private void HandleAuthState(object sender, UserService.AuthArgs e) {
+		private void HandleAuthState(object sender, ClientService.AuthArgs e) {
 			if (e.Failed) return;
-			UserName = e.isGuest ? "Гость" : e.newUserAuth.UserName;
+			UserName = e.isGuest ? "Гость" : UserFIO.GetFIO(e.newUserAuth);
 		}
 
 		private void LoadProducts() {
@@ -101,7 +106,17 @@ namespace WriteDry.ViewModels {
 		}
 
 		public void GoToOrders() => navigationController.NavigateToOrders();
-
+		public void AddItemToCart(ProductViewModel productVm) {
+			if (_clientService.isGuestEntered) {
+				MessageBox.Show("Для добавления заказа, вы должны быть авторизованы");
+				return;
+			}
+			var item = new Cart.CartItem(productVm.Product) {
+				Count = 1
+			};
+			_clientService.UserCart.AddItemToCart(item);
+			CanCreateOrder = true;
+		}
 		protected override void OnActivate() {
 			LoadProducts();
 			MaxProductsCount = Products.Count;
