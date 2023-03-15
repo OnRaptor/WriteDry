@@ -30,6 +30,7 @@ namespace WriteDry.Services {
 			public bool isGuest;
 			public User? newUserAuth;
 			public bool Failed;
+			public bool IsAdmin;
 		}
 
 		private ApplicationContext db;
@@ -50,8 +51,11 @@ namespace WriteDry.Services {
 					authorizedUser = user;
 					isGuestEntered = false;
 					UserCart = new();
-					OnAuthStateChanged(this, new AuthArgs { newUserAuth = user });
-					return;
+					if (user.UserRole == 1 || user.UserRole == 3)
+                        OnAuthStateChanged(this, new AuthArgs { newUserAuth = user, IsAdmin=true });
+					else
+                        OnAuthStateChanged(this, new AuthArgs { newUserAuth = user });
+                    return;
 				}
 			}
 			OnAuthStateChanged(this, new AuthArgs { Failed = true });

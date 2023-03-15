@@ -32,6 +32,7 @@ namespace WriteDry.PdfMarkup {
 			document.Add(content);
 
 			Table table = new(2, true);
+			table.SetMarginBottom(10f);
 
 			table.AddCell(new Paragraph("Дата заказа:")
 				.SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
@@ -53,40 +54,62 @@ namespace WriteDry.PdfMarkup {
 				.SetFont(comic)
 				.SetFontSize(16));
 
-			var tableOrder = new Table(2, false)
+			var tableOrder = new Table(5, false)
 				.SetWidth(UnitValue.CreatePercentValue(100))
 				.SetHeight(UnitValue.CreatePercentValue(100))
 				.SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.CENTER);
 
-			tableOrder.AddCell(new Paragraph("Артикул")
+			tableOrder.AddCell(new Paragraph("Название")
 			   .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
 			   .SetFont(comic)
 			   .SetFontSize(16));
 
-			tableOrder.AddCell(new Paragraph("Кол-во")
+            tableOrder.AddCell(new Paragraph("Описание")
+               .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+               .SetFont(comic)
+               .SetFontSize(16));
+
+            tableOrder.AddCell(new Paragraph("Цена")
+               .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+               .SetFont(comic)
+               .SetFontSize(16));
+
+            tableOrder.AddCell(new Paragraph("Скидка")
+               .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+               .SetFont(comic)
+               .SetFontSize(16));
+
+            tableOrder.AddCell(new Paragraph("Кол-во")
 			   .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
 			   .SetFont(comic)
 			   .SetFontSize(16));
 
 			foreach (var item in cart.CartItems) {
-				tableOrder.AddCell(new Paragraph(item.Product.ProductArticleNumber)
+				tableOrder.AddCell(new Paragraph(item.Product.ProductNameNavigation.ProductName)
 			   .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
 			   .SetFont(comic)
-			   .SetFontSize(16));
+			   .SetFontSize(11));
 
-				tableOrder.AddCell(new Paragraph(item.Count.ToString())
+				tableOrder.AddCell(new Paragraph($"{item.Product.ProductDescription}\nПроизводитель:{item.Product.ProductManufacturerNavigation.ProductManufacturer}")
+               .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+               .SetFont(comic)
+               .SetFontSize(11));
+
+                tableOrder.AddCell(new Paragraph(item.Product.ProductCost.ToString("C"))
+               .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+               .SetFont(comic)
+               .SetFontSize(11));
+
+                tableOrder.AddCell(new Paragraph(item.Product.ProductDiscountAmount.ToString() + "%")
+               .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+               .SetFont(comic)
+               .SetFontSize(11));
+
+                tableOrder.AddCell(new Paragraph(item.Count.ToString())
 			   .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
 			   .SetFont(comic)
-			   .SetFontSize(16));
+			   .SetFontSize(11));
 			}
-
-			table.AddCell(new Paragraph("Состав заказа:")
-			   .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
-			   .SetFont(comic)
-			   .SetFontSize(16));
-
-			table.AddCell(tableOrder);
-
 			table.AddCell(new Paragraph("Сумма заказа:")
 			   .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
 			   .SetFont(comic)
@@ -102,7 +125,7 @@ namespace WriteDry.PdfMarkup {
 			   .SetFont(comic)
 			   .SetFontSize(16));
 
-			table.AddCell(new Paragraph(string.Format("{0}%", DiscountAmmount))
+			table.AddCell(new Paragraph(string.Format("{0:C}", DiscountAmmount))
 			   .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
 			   .SetFont(comic)
 			   .SetFontSize(16));
@@ -129,8 +152,13 @@ namespace WriteDry.PdfMarkup {
 			   .SetFontSize(16));
 
 			document.Add(table);
-
-			table.Complete();
+            table.Complete();
+            document.Add(
+				new Paragraph("Состав заказа:")
+				.SetFont(comic)
+				.SetTextAlignment(TextAlignment.CENTER)
+				.SetFontSize(22f));
+			document.Add(tableOrder);
 
 			document.Close();
 

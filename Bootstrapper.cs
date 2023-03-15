@@ -15,7 +15,9 @@ namespace WriteDry {
 			builder.Bind<NavigationController>().And<INavigationController>().To<NavigationController>().InSingletonScope();
 			builder.Bind<ApplicationContext>().ToInstance(db);
 			builder.Bind<ListViewModel>().ToSelf().InSingletonScope();
-			builder.Bind<ClientService>().ToSelf().InSingletonScope();
+			var clientService = new ClientService(db);
+            builder.Bind<ClientService>().ToInstance(clientService);
+			builder.Bind<AdminService>().ToInstance(new AdminService(clientService, db));
 		}
 
 		protected override async void OnLaunch() {

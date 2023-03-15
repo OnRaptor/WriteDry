@@ -47,14 +47,16 @@ namespace WriteDry.ViewModels {
 			}
 			var codeToPickup = new Random().Next(100, 999);
 			var orderId = await _clientService.SubmitOrderAsync(_selectedPickupPoint, codeToPickup);
-			WindowsShell.OpenFileInExplorer(await Task.Run(() => CheckMarkup.GenerateMarkup(
+			var generatedMarkup = await Task.Run(() => CheckMarkup.GenerateMarkup(
 				_clientService.UserCart,
 				OrderCost,
 				TotalDiscountAmount,
 				_selectedPickupPoint,
 				codeToPickup,
 				orderId
-				)), true);
+				));
+
+			WindowsShell.OpenFileInExplorer(generatedMarkup, true);
 			CartItems.Clear();
 			_clientService.UserCart.CartItems.Clear();
 			CalculateStatistic();
@@ -71,8 +73,11 @@ namespace WriteDry.ViewModels {
 
 		public void OnPickupPointFinding(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) {
 			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+			{
 				sender.ItemsSource = _points.FindAll(item => item.FullAddress.ToLower().Contains(sender.Text.ToLower()));
-		}
+                _selectedPickupPoint = null;
+            }
+        }
 
 		public void CalculateStatistic() {
 			if (CartItems == null || CartItems.Count == 0) {
@@ -84,7 +89,7 @@ namespace WriteDry.ViewModels {
 			float discount = 0;
 			foreach (var item in CartItems) {
 				cost += Calculations.CalculateDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
-				discount += (float)item.Product.ProductDiscountAmount;
+				discount += Calculations.GetDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
 			}
 			OrderCost = cost;
 			TotalDiscountAmount = discount;

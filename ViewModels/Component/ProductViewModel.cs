@@ -14,7 +14,6 @@ namespace WriteDry.ViewModels.Component {
 
 		public bool ShouldDisplayFakeCost => this.CalculatedCostWithDiscount != null;
 
-		public bool IsAttachedToOrder { get; set; }
 
 		public Product Product { get; set; }
 		public ProductViewModel(Product product) {

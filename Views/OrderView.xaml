@@ -27,7 +27,7 @@
             <StackPanel>
                 <TextBlock Text="{Binding AuthorizedUser, Mode=OneTime}"/>
                 <TextBlock Text="{Binding OrderCost, Mode=OneWay, StringFormat={}Итоговая цена:{0:C}, ConverterCulture=ru-RU}"/>
-                <TextBlock Text="{Binding TotalDiscountAmount, Mode=OneWay, StringFormat={}Скидка:{0}%, ConverterCulture=ru-RU}"/>
+                <TextBlock Text="{Binding TotalDiscountAmount, Mode=OneWay, StringFormat={}Скидка:{0:C}, ConverterCulture=ru-RU}"/>
             </StackPanel>
 
             <ui:AppBarButton Command="{s:Action CreateOrder}" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="100" Padding="0" Label="Потвердить">
@@ -39,7 +39,7 @@
             <ui:AutoSuggestBox
                 VerticalAlignment="Center"
                 ui:ControlHelper.PlaceholderText="Выберите пункт выдачи"
-                Width="200"
+                Width="300"
                 GotFocus="{s:Action OnPickupPointFocus}"
                 SuggestionChosen="{s:Action OnPickupPointSuggestionChanged}"
                 TextChanged="{s:Action OnPickupPointFinding}"
@@ -54,13 +54,13 @@
             <ItemsControl ItemsSource="{Binding CartItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Background="{Binding DisplayedColor,Mode=OneTime}"  BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
-                            <DockPanel LastChildFill="True">
-                                <StackPanel Orientation="Horizontal">
+                        <Border BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
+                            <DockPanel Background="{Binding DisplayedColor,Mode=OneTime}" LastChildFill="True">
                                     <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
                                         <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
                                     </Border>
-                                    <StackPanel Margin="10 0">
+                                <TextBlock DockPanel.Dock="Right" Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
+                                <StackPanel Margin="10 0">
                                         <TextBlock Text="{Binding Product.ProductNameNavigation.ProductName}" FontWeight="Bold" />
                                         <TextBlock Text="{Binding Product.ProductDescription}"/>
                                         <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
@@ -76,8 +76,6 @@
                                     </TextBlock>
                                         <ui:NumberBox Minimum="1" ValueChanged="{s:Action CalculateStatistic}" HorizontalAlignment="Left" Width="140" SpinButtonPlacementMode="Inline" Header="Количество:" Value="{Binding Count}"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
-                                </StackPanel>
                                 <DockPanel.ContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Удалить товар" Command="{s:Action RemoveItem}" CommandParameter="{Binding}"/>

@@ -3,5 +3,6 @@
 		AuthViewModel CreateAuthViewModel();
 		ListViewModel CreateListViewModel();
 		OrderViewModel CreateOrderViewModel();
+		AdminShellViewModel CreateAdminShellViewModel();
 	}
 }

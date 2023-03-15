@@ -6,6 +6,7 @@ namespace WriteDry.Services {
 		void NavigateToAuth();
 		void NavigateToProducts();
 		void NavigateToOrders();
+		void NavigateToAdminShell();
 	}
 
 	public interface INavigationControllerDelegate {
@@ -24,6 +25,7 @@ namespace WriteDry.Services {
 		public void NavigateToAuth() => this.Delegate?.NavigateTo(factory.CreateAuthViewModel());
 		public void NavigateToProducts() => this.Delegate?.NavigateTo(factory.CreateListViewModel());
 		public void NavigateToOrders() => this.Delegate?.NavigateTo(factory.CreateOrderViewModel());
+		public void NavigateToAdminShell() => this.Delegate?.NavigateTo(factory.CreateAdminShellViewModel());
 
 	}
 }

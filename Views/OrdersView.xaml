@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="WriteDry.Views.OrdersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WriteDry.Views"      
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:vm="clr-namespace:WriteDry.ViewModels"      
+             xmlns:s="https://github.com/canton7/Stylet"
+             d:DataContext="{d:DesignInstance vm:OrdersViewModel}"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ComboBoxItem">
+            <TextBlock Text="{Binding Title}"/>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
+                <StackPanel Margin="10 0">
+                    <TextBlock FontSize="10" Text="{Binding UserName}"/>
+                    <TextBlock HorizontalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} из {1}">
+                                <Binding Path="Orders.Count"/>
+                                <Binding Path="MaxOrdersCount"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <ui:SimpleStackPanel Margin="5 0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Spacing="5">
+                <TextBox Text="{Binding SearchText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200" ui:ControlHelper.PlaceholderText="Поиск" Height="30" VerticalAlignment="Top"/>
+                <ComboBox 
+                    SelectedItem="{Binding SelectedSort}"
+                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    ui:ControlHelper.PlaceholderText="Сортировка" Width="200">
+                    <vm:SortItem Title="По возрастанию" SortProduct="Asc"/>
+                    <vm:SortItem Title="По убыванию" SortProduct="Desc"/>
+                </ComboBox>
+                <ComboBox
+                    SelectedItem="{Binding SelectedFilter}" 
+                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    ui:ControlHelper.PlaceholderText="Размер скидки" Width="200">
+                    <vm:FilterItem Title="Все диапазоны" FilterProduct="All"/>
+                    <vm:FilterItem Title="0-9,99%" FilterProduct="Low"/>
+                    <vm:FilterItem Title="10-14,99%, " FilterProduct="Medium"/>
+                    <vm:FilterItem Title="15% и более" FilterProduct="High"/>
+                </ComboBox>
+            </ui:SimpleStackPanel>
+        </DockPanel>
+        <ui:ScrollViewerEx ui:ScrollViewerHelper.AutoHideScrollBars="True" Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Orders}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Padding="5" Margin="5" BorderThickness="2" CornerRadius="15" BorderBrush="Black">
+                            <DockPanel LastChildFill="True">
+                                <ui:SimpleStackPanel Spacing="5" DockPanel.Dock="Right">
+                                    <DatePicker s:View.ActionTarget="{Binding}" SelectedDateChanged="{s:Action DateChanged}"  SelectedDate="{Binding ChangeableDate, Mode=OneWay}" ui:ControlHelper.PlaceholderText="Дата доставки"/>
+                                    <ComboBox>
+                                        <ComboBoxItem Content="Новый"/>
+                                        <ComboBoxItem Content="Завершен"/>
+                                    </ComboBox>
+                                    <Button s:View.ActionTarget="{Binding}" Command="{s:Action ToggleDisplayOrderProducts}">Отображение состава</Button>
+                                </ui:SimpleStackPanel>
+                                <StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderDate, StringFormat=Дата заказа:{0:D}, ConverterCulture=ru-RU}"/>
+                                        <TextBlock Margin="10 0" Text="{Binding TotalCost, StringFormat=Итоговая стоимость:{0:C2}, ConverterCulture=ru-RU}"/>
+                                        <TextBlock Margin="10 0" Text="{Binding TotalDiscount, StringFormat=Итоговая скидка:{0:C2}, ConverterCulture=ru-RU}"/>
+                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderFullName}"/>
+                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderCode, StringFormat=Код заказа:{0}}"/>
+                                    </StackPanel>
+                                    <Border CornerRadius="12" Visibility="{Binding ShouldDisplayOrderProducts, Converter={x:Static s:BoolToVisibilityConverter.Instance}, NotifyOnSourceUpdated=True}" BorderBrush="Gray" Padding="3" Margin="3" BorderThickness="2" >
+                                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding OrderProducts}">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Имя" Binding="{Binding ProductArticleNumberNavigation.ProductNameNavigation.ProductName}"/>
+                                                <DataGridTextColumn Header="Описание" Binding="{Binding ProductArticleNumberNavigation.ProductDescription}"/>
+                                                <DataGridTextColumn Header="Производитель" Binding="{Binding ProductArticleNumberNavigation.ProductManufacturerNavigation.ProductManufacturer}"/>
+                                                <DataGridTextColumn Header="Цена" Binding="{Binding ProductArticleNumberNavigation.ProductCost, StringFormat={}{0:C},ConverterCulture=ru-RU}"/>
+                                                <DataGridTextColumn Header="Скидка" Binding="{Binding ProductArticleNumberNavigation.ProductDiscountAmount, StringFormat={}{0}%}"/>
+                                                <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding ProductArticleNumberNavigation.ProductQuantityInStock}"/>
+                                                <DataGridTextColumn Header="Кол-во в заказе" Binding="{Binding ProductCount}"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Border>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ui:ScrollViewerEx>
+    </Grid>
+</UserControl>

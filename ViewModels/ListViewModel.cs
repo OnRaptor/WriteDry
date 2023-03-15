@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using WriteDry.Db.Models;
 using WriteDry.Models;
 using WriteDry.Services;
 using WriteDry.Utils;
@@ -22,6 +23,18 @@ namespace WriteDry.ViewModels {
 	}
 	public enum SortProduct {
 		Desc, Asc
+	}
+
+	public static class ProductsExtensions
+	{
+		public static List<ProductViewModel> Search(this BindableCollection<ProductViewModel> items, string text)
+		{
+            return (
+				from p in items
+				where p.Product.ProductNameNavigation.ProductName.ToLower().Contains(text.ToLower())
+				select p
+				).ToList();
+        }
 	}
 
 	public class ListViewModel : Screen {
@@ -56,7 +69,7 @@ namespace WriteDry.ViewModels {
 			Products.AddRange(_productsCache);
 		}
 
-		private void LoadProductsToViewItems() => Products = new BindableCollection<ProductViewModel>(_productsCache);
+
 
 		protected override void OnPropertyChanged(string propertyName) {
 			if (propertyName == nameof(SearchText) || propertyName == nameof(SelectedFilter)) {
@@ -66,11 +79,7 @@ namespace WriteDry.ViewModels {
 					return;
 				}
 				ApplyFilter();
-				Products = new BindableCollection<ProductViewModel>((
-					from p in Products
-					where p.Product.ProductNameNavigation.ProductName.ToLower().Contains(SearchText.ToLower())
-					select p
-					).ToList());
+				LoadProductsToViewItems(Products.Search(SearchText));
 				ApplySort();
 			}
 			else if (propertyName == nameof(SelectedSort))
@@ -117,7 +126,9 @@ namespace WriteDry.ViewModels {
 			_clientService.UserCart.AddItemToCart(item);
 			CanCreateOrder = true;
 		}
-		protected override void OnActivate() {
+        private void LoadProductsToViewItems() => Products = new BindableCollection<ProductViewModel>(_productsCache);
+        private void LoadProductsToViewItems(List<ProductViewModel> items) => Products = new BindableCollection<ProductViewModel>(items);
+        protected override void OnActivate() {
 			LoadProducts();
 			MaxProductsCount = Products.Count;
 			base.OnActivate();

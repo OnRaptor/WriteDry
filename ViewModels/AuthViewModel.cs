@@ -1,5 +1,6 @@
 ﻿using Stylet;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WriteDry.Services;
@@ -29,6 +30,8 @@ namespace WriteDry.ViewModels {
 		private void HandleAuthEvents(object sender, ClientService.AuthArgs e) {
 			if (e.Failed)
 				MessageBox.Show("Проверьте данные");
+			else if (e.IsAdmin)
+				_navigation.NavigateToAdminShell();
 			else
 				_navigation.NavigateToProducts();
 		}
@@ -36,8 +39,8 @@ namespace WriteDry.ViewModels {
 #if DEBUG
 		protected override async void OnViewLoaded() {
 			await Task.Delay(400);
-			Login = "loginDEjrm2018";
-			Password = "Cpb+Im";
+			Login = "loginDEpxl2018";
+			Password = "P6h4Jq";
 			Auth();
 			base.OnViewLoaded();
 		}
