@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WriteDry.Db.Models;
 
 namespace WriteDry.Services
@@ -18,8 +15,7 @@ namespace WriteDry.Services
             db = applicationContext;
         }
 
-        private void HandleAuthStateChanged(object sender, ClientService.AuthArgs e)
-        {
+        private void HandleAuthStateChanged(object sender, ClientService.AuthArgs e) {
             if (!e.IsAdmin) return;
 
             AuthorizedUser = e.newUserAuth;

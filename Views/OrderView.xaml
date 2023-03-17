@@ -54,8 +54,8 @@
             <ItemsControl ItemsSource="{Binding CartItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
-                            <DockPanel Background="{Binding DisplayedColor,Mode=OneTime}" LastChildFill="True">
+                        <Border Background="{Binding DisplayedColor,Mode=OneTime}" BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
+                            <DockPanel LastChildFill="True">
                                     <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
                                         <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
                                     </Border>

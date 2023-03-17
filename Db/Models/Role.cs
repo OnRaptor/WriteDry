@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace WriteDry.Db.Models {
-	public class Role {
-		public int RoleId { get; set; }
+namespace WriteDry.Db.Models
+{
+    public class Role
+    {
+        public int RoleId { get; set; }
 
-		public string RoleName { get; set; } = null!;
+        public string RoleName { get; set; } = null!;
 
-		public virtual ICollection<User> Users { get; } = new List<User>();
-	}
+        public virtual ICollection<User> Users { get; } = new List<User>();
+    }
 }

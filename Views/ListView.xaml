@@ -14,9 +14,6 @@
       d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <c:FileNameToResourcePathConvertor x:Key="FileNameToResourcePathConvertor"/>
-        <DataTemplate x:Key="ComboBoxItem">
-            <TextBlock Text="{Binding Title}"/>
-        </DataTemplate>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -58,14 +55,14 @@
                 <TextBox Text="{Binding SearchText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200" ui:ControlHelper.PlaceholderText="Поиск" Height="30" VerticalAlignment="Top"/>
                 <ComboBox 
                     SelectedItem="{Binding SelectedSort}"
-                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    DisplayMemberPath="Title"
                     ui:ControlHelper.PlaceholderText="Сортировка" Width="200">
                     <vm:SortItem Title="По возрастанию" SortProduct="Asc"/>
                     <vm:SortItem Title="По убыванию" SortProduct="Desc"/>
                 </ComboBox>
                 <ComboBox
                     SelectedItem="{Binding SelectedFilter}" 
-                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    DisplayMemberPath="Title"
                     ui:ControlHelper.PlaceholderText="Размер скидки" Width="200">
                     <vm:FilterItem Title="Все диапазоны" FilterProduct="All"/>
                     <vm:FilterItem Title="0-9,99%" FilterProduct="Low"/>
@@ -79,8 +76,8 @@
             <ItemsControl ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
-                            <DockPanel  Background="{Binding DisplayedColor,Mode=OneTime}" LastChildFill="True">
+                        <Border Background="{Binding DisplayedColor,Mode=OneTime}" BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
+                            <DockPanel LastChildFill="True">
                                 <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
                                     <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
                                 </Border>

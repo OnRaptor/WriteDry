@@ -5,16 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WriteDry.Views"      
              xmlns:ui="http://schemas.modernwpf.com/2019"
-             xmlns:vm="clr-namespace:WriteDry.ViewModels"      
+             xmlns:vm="clr-namespace:WriteDry.ViewModels"  
+             xmlns:components="clr-namespace:WriteDry.ViewModels.Component"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance vm:OrdersViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.Resources>
-        <DataTemplate x:Key="ComboBoxItem">
-            <TextBlock Text="{Binding Title}"/>
-        </DataTemplate>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -35,17 +31,16 @@
                 </StackPanel>
             </StackPanel>
             <ui:SimpleStackPanel Margin="5 0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Spacing="5">
-                <TextBox Text="{Binding SearchText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200" ui:ControlHelper.PlaceholderText="Поиск" Height="30" VerticalAlignment="Top"/>
                 <ComboBox 
                     SelectedItem="{Binding SelectedSort}"
-                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    DisplayMemberPath="Title"
                     ui:ControlHelper.PlaceholderText="Сортировка" Width="200">
                     <vm:SortItem Title="По возрастанию" SortProduct="Asc"/>
                     <vm:SortItem Title="По убыванию" SortProduct="Desc"/>
                 </ComboBox>
                 <ComboBox
                     SelectedItem="{Binding SelectedFilter}" 
-                    ItemTemplate="{StaticResource ComboBoxItem}"
+                    DisplayMemberPath="Title"
                     ui:ControlHelper.PlaceholderText="Размер скидки" Width="200">
                     <vm:FilterItem Title="Все диапазоны" FilterProduct="All"/>
                     <vm:FilterItem Title="0-9,99%" FilterProduct="Low"/>
@@ -61,10 +56,12 @@
                         <Border Padding="5" Margin="5" BorderThickness="2" CornerRadius="15" BorderBrush="Black">
                             <DockPanel LastChildFill="True">
                                 <ui:SimpleStackPanel Spacing="5" DockPanel.Dock="Right">
-                                    <DatePicker s:View.ActionTarget="{Binding}" SelectedDateChanged="{s:Action DateChanged}"  SelectedDate="{Binding ChangeableDate, Mode=OneWay}" ui:ControlHelper.PlaceholderText="Дата доставки"/>
-                                    <ComboBox>
-                                        <ComboBoxItem Content="Новый"/>
-                                        <ComboBoxItem Content="Завершен"/>
+                                    <DatePicker s:View.ActionTarget="{Binding}" SelectedDateChanged="{s:Action DateChanged}"  SelectedDate="{Binding DeliveryDate, Mode=OneWay}" ui:ControlHelper.PlaceholderText="Дата доставки"/>
+                                    <ComboBox s:View.ActionTarget="{Binding}" DisplayMemberPath="Title" SelectedIndex="{Binding CurrentStatus}" SelectionChanged="{s:Action StatusChanged}">
+                                        <ComboBox.Items>
+                                            <components:OrderStatusItem IsNew="True" Title="Новый"/>
+                                            <components:OrderStatusItem IsNew="False" Title="Старый"/>
+                                        </ComboBox.Items>
                                     </ComboBox>
                                     <Button s:View.ActionTarget="{Binding}" Command="{s:Action ToggleDisplayOrderProducts}">Отображение состава</Button>
                                 </ui:SimpleStackPanel>
