@@ -1,0 +1,23 @@
+﻿<ui:ContentDialog x:Class="WriteDry.Views.AddProductView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WriteDry.Views"
+             mc:Ignorable="d" 
+             xmlns:s="https://github.com/canton7/Stylet"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:models="clr-namespace:WriteDry.Db.Models"
+             xmlns:vm="clr-namespace:WriteDry.ViewModels"   
+             CloseButtonText="Отмена"
+             Title="Добавление продукта"
+             PrimaryButtonText="Добавить"
+             PrimaryButtonStyle="{StaticResource AccentButtonStyle}"
+             PrimaryButtonCommand="{s:Action Apply}"
+             CloseButtonCommand="{s:Action Cancel}"
+             d:DataContext="{d:DesignInstance vm:AddProductViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <ui:SimpleStackPanel Spacing="10">
+        
+    </ui:SimpleStackPanel>
+</ui:ContentDialog>

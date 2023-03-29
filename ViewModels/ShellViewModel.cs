@@ -9,7 +9,8 @@ namespace WriteDry.ViewModels
         public bool BackButtonVisible { get; set; }
 
         private List<IScreen> screens = new List<IScreen>();
-        public void NavigateTo(IScreen screen) {
+        public void NavigateTo(IScreen screen)
+        {
             screens.Add(screen);
             this.ActivateItem(screen);
             if (screen is AuthViewModel || screens.Count == 1)
@@ -17,7 +18,8 @@ namespace WriteDry.ViewModels
             else
                 BackButtonVisible = true;
         }
-        public void HandleBackPress() {
+        public void HandleBackPress()
+        {
             this.GoBack();
             if (ActiveItem is AuthViewModel)
                 BackButtonVisible = false;

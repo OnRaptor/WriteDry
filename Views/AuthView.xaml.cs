@@ -7,7 +7,8 @@ namespace WriteDry.Views
     /// </summary>
     public partial class AuthView : UserControl
     {
-        public AuthView() {
+        public AuthView()
+        {
             InitializeComponent();
         }
     }

@@ -7,7 +7,8 @@ namespace WriteDry.Views
     /// </summary>
     public partial class AdminShellView : UserControl
     {
-        public AdminShellView() {
+        public AdminShellView()
+        {
             InitializeComponent();
         }
     }

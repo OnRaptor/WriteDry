@@ -4,9 +4,121 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WriteDry.Views"
+             xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:vm="clr-namespace:WriteDry.ViewModels"  
+             xmlns:components="clr-namespace:WriteDry.ViewModels.Component"
+             xmlns:s="https://github.com/canton7/Stylet"
+             d:DataContext="{d:DesignInstance vm:ProductsViewModel}"
              mc:Ignorable="d" 
+             xmlns:c="clr-namespace:WriteDry.Convertor"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <c:FileNameToResourcePathConvertor x:Key="FileNameToResourcePathConvertor"/>
+    </UserControl.Resources>
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Style="{StaticResource AccentButtonStyle}" ui:ControlHelper.CornerRadius="50" VerticalAlignment="Center" Margin="5 0" Padding="1">
+                    <ui:FlyoutService.Flyout>
+                        <ui:MenuFlyout AreOpenCloseAnimationsEnabled="True" Placement="BottomEdgeAlignedLeft" x:Name="Flyout1">
+                            <MenuItem Header="{Binding UserName}"/>
+                            <MenuItem
+                                Visibility="{Binding CanCreateOrder, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
+                                Command="{s:Action GoToOrders}"
+                                Header="Корзина"/>
+                        </ui:MenuFlyout>
+                    </ui:FlyoutService.Flyout>
+
+                    <Ellipse Width="30" Height="30">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="/Assets/logo.png"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Button>
+                <StackPanel>
+                    <Label Content="{Binding UserName}" FontSize="10"/>
+                    <TextBlock HorizontalAlignment="Center">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} из {1}">
+                                <Binding Path="Products.Count"/>
+                                <Binding Path="MaxProductsCount"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <ui:SimpleStackPanel Margin="5 0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Spacing="5">
+                <TextBox Text="{Binding SearchText, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200" ui:ControlHelper.PlaceholderText="Поиск" Height="30" VerticalAlignment="Top"/>
+                <ComboBox 
+                    SelectedItem="{Binding SelectedSort}"
+                    DisplayMemberPath="Title"
+                    ui:ControlHelper.PlaceholderText="Сортировка" Width="200">
+                    <vm:SortItem Title="По возрастанию" SortProduct="Asc"/>
+                    <vm:SortItem Title="По убыванию" SortProduct="Desc"/>
+                </ComboBox>
+                <ComboBox
+                    SelectedItem="{Binding SelectedFilter}" 
+                    DisplayMemberPath="Title"
+                    ui:ControlHelper.PlaceholderText="Размер скидки" Width="200">
+                    <vm:FilterItem Title="Все диапазоны" FilterProduct="All"/>
+                    <vm:FilterItem Title="0-9,99%" FilterProduct="Low"/>
+                    <vm:FilterItem Title="10-14,99%, " FilterProduct="Medium"/>
+                    <vm:FilterItem Title="15% и более" FilterProduct="High"/>
+                </ComboBox>
+            </ui:SimpleStackPanel>
+        </DockPanel>
+
+        <Button Panel.ZIndex="1" Command="{s:Action AddProduct}" Width="40" Height="40" ui:ControlHelper.CornerRadius="50" Style="{StaticResource AccentButtonStyle}" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1">
+            <ui:SymbolIcon Symbol="Add"/>
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="30" Opacity="0.5"/>
+            </Button.Effect>
+        </Button>
+        
+        <ScrollViewer  Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{Binding DisplayedColor,Mode=OneWay}" BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
+                            <DockPanel LastChildFill="True">
+                                <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
+                                    <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
+                                </Border>
+                                <StackPanel DockPanel.Dock="Right">
+                                    <TextBlock Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
+                                    <Button Command="{s:Action EditProduct}" CommandParameter="{Binding}">Редактировать</Button>
+                                </StackPanel>
+                                <StackPanel HorizontalAlignment="Left" Margin="10 0">
+                                    <TextBlock FontWeight="Bold" >
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} / {1}">
+                                                <Binding Path="Product.ProductNameNavigation.ProductName"/>
+                                                <Binding Path="Product.ProductArticleNumber"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Product.ProductDescription}"/>
+                                    <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
+                                    <TextBlock>
+                                        <TextBlock.Inlines>
+                                            <Run Text="Цена: "/>
+                                            <TextBlock 
+                                                 Text="{Binding Product.ProductCost, StringFormat={}{0:C}, ConverterCulture=ru-RU}"
+                                                 Visibility="{Binding ShouldDisplayFakeCost,Mode=OneWay, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
+                                                 TextDecorations="Strikethrough"/>
+                                            <Run Text="{Binding CalculatedCostWithDiscount,Mode=OneWay, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
+                                        </TextBlock.Inlines>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </UserControl>

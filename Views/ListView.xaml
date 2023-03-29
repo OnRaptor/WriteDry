@@ -97,12 +97,12 @@
                                         </TextBlock.Inlines>
                                     </TextBlock>
                                 </StackPanel>
-                                <DockPanel.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Добавить к заказу" Command="{s:Action AddItemToCart}" CommandParameter="{Binding}"/>
-                                    </ContextMenu>
-                                </DockPanel.ContextMenu>
                             </DockPanel>
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Добавить к заказу" Command="{s:Action AddItemToCart}" CommandParameter="{Binding}"/>
+                                </ContextMenu>
+                            </Border.ContextMenu>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

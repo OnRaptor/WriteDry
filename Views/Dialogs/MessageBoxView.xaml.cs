@@ -1,13 +1,14 @@
 ﻿using ModernWpf.Controls;
 
-namespace WriteDry.Dialogs
+namespace WriteDry.Views
 {
     /// <summary>
     /// Логика взаимодействия для MessageBox.xaml
     /// </summary>
-    public partial class MessageBox : ContentDialog
+    public partial class MessageBoxView : ContentDialog
     {
-        public MessageBox() {
+        public MessageBoxView()
+        {
             InitializeComponent();
         }
     }

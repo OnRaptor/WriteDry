@@ -7,7 +7,8 @@ namespace WriteDry.Views
     /// </summary>
     public partial class ProductsView : UserControl
     {
-        public ProductsView() {
+        public ProductsView()
+        {
             InitializeComponent();
         }
     }

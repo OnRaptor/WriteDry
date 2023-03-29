@@ -1,9 +1,10 @@
 ﻿using Stylet;
 using System;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using WriteDry.Services;
+using WriteDry.ViewModels.Component;
+using WriteDry.ViewModels.Framework;
 
 namespace WriteDry.ViewModels
 {
@@ -15,23 +16,31 @@ namespace WriteDry.ViewModels
 
         private NavigationController _navigation;
         private ClientService _clientService;
+        private DialogManager _dialogManager;
+        private IViewModelFactory _viewModelFactory;
 
-        public AuthViewModel(NavigationController navigation, ClientService clientService) {
+        public AuthViewModel(NavigationController navigation, ClientService clientService, DialogManager dialogManager, IViewModelFactory viewModelFactory = null)
+        {
             _navigation = navigation;
             _clientService = clientService;
             _clientService.OnAuthStateChanged += HandleAuthEvents;
+            _dialogManager = dialogManager;
+            _viewModelFactory = viewModelFactory;
         }
-        public void OnPasswordChange(object sender, EventArgs e) {
+        public void OnPasswordChange(object sender, EventArgs e)
+        {
             var passwordBox = (PasswordBox)sender;
             Password = passwordBox.Password;
         }
 
         public void EnterAsGuest() => _clientService.LoginAsGuest();
         public async void Auth() => await _clientService.Login(Login, Password);
+        public void GoToReigster() => _navigation.NavigateToRegistration();
 
-        private void HandleAuthEvents(object sender, ClientService.AuthArgs e) {
+        private async void HandleAuthEvents(object sender, ClientService.AuthArgs e)
+        {
             if (e.Failed)
-                MessageBox.Show("Проверьте данные");
+                await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Проверьте данные"));
             else if (e.IsAdmin)
                 _navigation.NavigateToAdminShell();
             else
@@ -39,7 +48,8 @@ namespace WriteDry.ViewModels
         }
 
 #if DEBUG
-        protected override async void OnViewLoaded() {
+        protected override async void OnViewLoaded()
+        {
             await Task.Delay(400);
             Login = "loginDEpxl2018";
             Password = "P6h4Jq";

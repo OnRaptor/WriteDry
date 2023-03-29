@@ -9,6 +9,7 @@
              xmlns:components="clr-namespace:WriteDry.ViewModels.Component"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance vm:OrdersViewModel}"
+             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -31,6 +32,15 @@
                 </StackPanel>
             </StackPanel>
             <ui:SimpleStackPanel Margin="5 0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Spacing="5">
+                <TextBox
+                    ui:ControlHelper.PlaceholderText="Поиск по номеру заказу"
+                    Width="200"
+                    PreviewTextInput="TextBox_PreviewTextInput"
+                    Text="{Binding  SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Return" Command="{s:Action ApplySearch}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
                 <ComboBox 
                     SelectedItem="{Binding SelectedSort}"
                     DisplayMemberPath="Title"
@@ -53,14 +63,14 @@
             <ItemsControl ItemsSource="{Binding Orders}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="5" Margin="5" BorderThickness="2" CornerRadius="15" BorderBrush="Black">
+                        <Border Background="{Binding DisplayedColor}" Padding="5" Margin="5" BorderThickness="2" CornerRadius="15" BorderBrush="Black">
                             <DockPanel LastChildFill="True">
                                 <ui:SimpleStackPanel Spacing="5" DockPanel.Dock="Right">
-                                    <DatePicker s:View.ActionTarget="{Binding}" SelectedDateChanged="{s:Action DateChanged}"  SelectedDate="{Binding DeliveryDate, Mode=OneWay}" ui:ControlHelper.PlaceholderText="Дата доставки"/>
-                                    <ComboBox s:View.ActionTarget="{Binding}" DisplayMemberPath="Title" SelectedIndex="{Binding CurrentStatus}" SelectionChanged="{s:Action StatusChanged}">
+                                    <DatePicker ToolTipService.ToolTip="Дата доставки" ToolTipService.IsEnabled="True" s:View.ActionTarget="{Binding}" SelectedDateChanged="{s:Action DateChanged}"  SelectedDate="{Binding DeliveryDate, Mode=OneWay}" ui:ControlHelper.PlaceholderText="Дата доставки"/>
+                                    <ComboBox ToolTipService.ToolTip="Статус заказа" ToolTipService.IsEnabled="True" s:View.ActionTarget="{Binding}" DisplayMemberPath="Title" SelectedIndex="{Binding CurrentStatus}" SelectionChanged="{s:Action StatusChanged}">
                                         <ComboBox.Items>
                                             <components:OrderStatusItem IsNew="True" Title="Новый"/>
-                                            <components:OrderStatusItem IsNew="False" Title="Старый"/>
+                                            <components:OrderStatusItem IsNew="False" Title="Завершен"/>
                                         </ComboBox.Items>
                                     </ComboBox>
                                     <Button s:View.ActionTarget="{Binding}" Command="{s:Action ToggleDisplayOrderProducts}">Отображение состава</Button>
@@ -70,11 +80,11 @@
                                         <TextBlock Margin="10 0" Text="{Binding Order.OrderDate, StringFormat=Дата заказа:{0:D}, ConverterCulture=ru-RU}"/>
                                         <TextBlock Margin="10 0" Text="{Binding TotalCost, StringFormat=Итоговая стоимость:{0:C2}, ConverterCulture=ru-RU}"/>
                                         <TextBlock Margin="10 0" Text="{Binding TotalDiscount, StringFormat=Итоговая скидка:{0:C2}, ConverterCulture=ru-RU}"/>
-                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderFullName}"/>
+                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderFullName, StringFormat=ФИО: {0}}"/>
                                         <TextBlock Margin="10 0" Text="{Binding Order.OrderCode, StringFormat=Код заказа:{0}}"/>
                                     </StackPanel>
                                     <Border CornerRadius="12" Visibility="{Binding ShouldDisplayOrderProducts, Converter={x:Static s:BoolToVisibilityConverter.Instance}, NotifyOnSourceUpdated=True}" BorderBrush="Gray" Padding="3" Margin="3" BorderThickness="2" >
-                                        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding OrderProducts}">
+                                        <DataGrid MinColumnWidth="120" GridLinesVisibility="Vertical" RowHeaderWidth="0" SelectionUnit="FullRow" ColumnWidth="Auto" IsReadOnly="True" Background="Transparent" AutoGenerateColumns="False" ItemsSource="{Binding OrderProducts}">
                                             <DataGrid.Columns>
                                                 <DataGridTextColumn Header="Имя" Binding="{Binding ProductArticleNumberNavigation.ProductNameNavigation.ProductName}"/>
                                                 <DataGridTextColumn Header="Описание" Binding="{Binding ProductArticleNumberNavigation.ProductDescription}"/>
@@ -84,6 +94,27 @@
                                                 <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding ProductArticleNumberNavigation.ProductQuantityInStock}"/>
                                                 <DataGridTextColumn Header="Кол-во в заказе" Binding="{Binding ProductCount}"/>
                                             </DataGrid.Columns>
+                                            <DataGrid.Resources>
+                                                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                            </DataGrid.Resources>
+                                            <DataGrid.RowStyle>
+                                                <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                    <!--  Triggers  -->
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGrid.RowStyle>
                                         </DataGrid>
                                     </Border>
                                 </StackPanel>

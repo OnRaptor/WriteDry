@@ -4,7 +4,8 @@ namespace WriteDry.Views
 {
     public partial class ShellView : Window
     {
-        public ShellView() {
+        public ShellView()
+        {
             InitializeComponent();
         }
     }

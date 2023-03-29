@@ -10,12 +10,14 @@ namespace WriteDry.Services
         public List<Order> Orders { get; set; } = new List<Order>();
 
         private ApplicationContext db;
-        public AdminService(ClientService clientService, ApplicationContext applicationContext) {
+        public AdminService(ClientService clientService, ApplicationContext applicationContext)
+        {
             clientService.OnAuthStateChanged += HandleAuthStateChanged;
             db = applicationContext;
         }
 
-        private void HandleAuthStateChanged(object sender, ClientService.AuthArgs e) {
+        private void HandleAuthStateChanged(object sender, ClientService.AuthArgs e)
+        {
             if (!e.IsAdmin) return;
 
             AuthorizedUser = e.newUserAuth;

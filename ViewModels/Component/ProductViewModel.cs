@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Stylet;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using WriteDry.Db.Models;
@@ -6,7 +7,7 @@ using WriteDry.Utils;
 
 namespace WriteDry.ViewModels.Component
 {
-    public class ProductViewModel
+    public class ProductViewModel : PropertyChangedBase
     {
 
         public float? CalculatedCostWithDiscount
@@ -16,9 +17,9 @@ namespace WriteDry.ViewModels.Component
 
         public bool ShouldDisplayFakeCost => this.CalculatedCostWithDiscount != null;
 
-
         public Product Product { get; set; }
-        public ProductViewModel(Product product) {
+        public ProductViewModel(Product product)
+        {
             Product = product;
         }
 
@@ -27,5 +28,16 @@ namespace WriteDry.ViewModels.Component
                 from p in products
                 select new ProductViewModel(p)
                 );
+    }
+    public static class ProductsExtensions
+    {
+        public static List<ProductViewModel> Search(this BindableCollection<ProductViewModel> items, string text)
+        {
+            return (
+                from p in items
+                where p.Product.ProductNameNavigation.ProductName.ToLower().Contains(text.ToLower())
+                select p
+                ).ToList();
+        }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Stylet;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
+
 using WriteDry.Models;
 using WriteDry.Services;
 using WriteDry.Utils;
 using WriteDry.ViewModels.Component;
+using WriteDry.ViewModels.Framework;
 
 namespace WriteDry.ViewModels
 {
@@ -29,17 +30,6 @@ namespace WriteDry.ViewModels
         Desc, Asc
     }
 
-    public static class ProductsExtensions
-    {
-        public static List<ProductViewModel> Search(this BindableCollection<ProductViewModel> items, string text) {
-            return (
-                from p in items
-                where p.Product.ProductNameNavigation.ProductName.ToLower().Contains(text.ToLower())
-                select p
-                ).ToList();
-        }
-    }
-
     public class ListViewModel : Screen
     {
         public bool CanCreateOrder { get; set; }
@@ -54,29 +44,39 @@ namespace WriteDry.ViewModels
         private ApplicationContext dbContext;
         private ClientService _clientService;
         private List<ProductViewModel> _productsCache; //data from db
+        private DialogManager _dialogManager;
+        private IViewModelFactory _viewModelFactory;
 
-        public ListViewModel(NavigationController _navController, ClientService clientService, ApplicationContext dbContext) {
+        public ListViewModel(NavigationController _navController, ClientService clientService, ApplicationContext dbContext, DialogManager dialogManager, IViewModelFactory viewModelFactory)
+        {
             navigationController = _navController;
             this.dbContext = dbContext;
             this._clientService = clientService;
             clientService.OnAuthStateChanged += HandleAuthState;
+            _dialogManager = dialogManager;
+            _viewModelFactory = viewModelFactory;
         }
 
-        private void HandleAuthState(object sender, ClientService.AuthArgs e) {
+        private void HandleAuthState(object sender, ClientService.AuthArgs e)
+        {
             if (e.Failed) return;
             UserName = e.isGuest ? "Гость" : UserFIO.GetFIO(e.newUserAuth);
         }
 
-        private void LoadProducts() {
+        private void LoadProducts()
+        {
             _productsCache = ProductViewModel.CreateCollectionFromProductList(dbContext.Products.ToList());
             Products.Clear();
             Products.AddRange(_productsCache);
         }
 
 
-        protected override void OnPropertyChanged(string propertyName) {
-            if (propertyName == nameof(SearchText) || propertyName == nameof(SelectedFilter)) {
-                if (string.IsNullOrEmpty(SearchText)) {
+        protected override void OnPropertyChanged(string propertyName)
+        {
+            if (propertyName == nameof(SearchText) || propertyName == nameof(SelectedFilter))
+            {
+                if (string.IsNullOrEmpty(SearchText))
+                {
                     LoadProductsToViewItems();
                     ApplyFilter();
                     return;
@@ -90,15 +90,18 @@ namespace WriteDry.ViewModels
             base.OnPropertyChanged(propertyName);
         }
 
-        public void ApplySort() {
+        public void ApplySort()
+        {
             if (SelectedSort.SortProduct == SortProduct.Desc)
                 Products = new BindableCollection<ProductViewModel>(Products.OrderByDescending(item => item.Product.ProductCost));
             else  // Ascending
                 Products = new BindableCollection<ProductViewModel>(Products.OrderBy(item => item.Product.ProductCost));
         }
 
-        public void ApplyFilter() {
-            switch (SelectedFilter.FilterProduct) {
+        public void ApplyFilter()
+        {
+            switch (SelectedFilter.FilterProduct)
+            {
                 case FilterProduct.All:
                     LoadProductsToViewItems();
                     break;
@@ -118,12 +121,15 @@ namespace WriteDry.ViewModels
         }
 
         public void GoToOrders() => navigationController.NavigateToOrders();
-        public void AddItemToCart(ProductViewModel productVm) {
-            if (_clientService.isGuestEntered) {
-                MessageBox.Show("Для добавления заказа, вы должны быть авторизованы");
+        public void AddItemToCart(ProductViewModel productVm)
+        {
+            if (_clientService.isGuestEntered)
+            {
+                _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Для добавления заказа, вы должны быть авторизованы"));
                 return;
             }
-            var item = new Cart.CartItem(productVm.Product) {
+            var item = new Cart.CartItem(productVm.Product)
+            {
                 Count = 1
             };
             _clientService.UserCart.AddItemToCart(item);
@@ -131,7 +137,8 @@ namespace WriteDry.ViewModels
         }
         private void LoadProductsToViewItems() => Products = new BindableCollection<ProductViewModel>(_productsCache);
         private void LoadProductsToViewItems(List<ProductViewModel> items) => Products = new BindableCollection<ProductViewModel>(items);
-        protected override void OnActivate() {
+        protected override void OnActivate()
+        {
             LoadProducts();
             MaxProductsCount = Products.Count;
             base.OnActivate();

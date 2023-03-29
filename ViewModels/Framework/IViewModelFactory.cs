@@ -1,4 +1,5 @@
-﻿using WriteDry.ViewModels.Component;
+﻿
+using WriteDry.ViewModels.Component;
 
 namespace WriteDry.ViewModels.Framework
 {
@@ -9,5 +10,9 @@ namespace WriteDry.ViewModels.Framework
         OrderViewModel CreateOrderViewModel();
         OrderItemViewModel CreateOrderItemViewModel();
         AdminShellViewModel CreateAdminShellViewModel();
+        RegisterViewModel CreateRegisterViewModel();
+        MessageBoxViewModel CreateMessageBoxViewModel();
+        EditProductViewModel CreateEditProductViewModel();
+        AddProductViewModel CreateAddProductViewModel();
     }
 }

@@ -16,6 +16,7 @@
             <TextBox Text="{Binding Login, Mode=TwoWay}" Width="200" ui:ControlHelper.PlaceholderText="Логин"/>
             <PasswordBox PasswordChanged="{s:Action OnPasswordChange}" Width="200" ui:ControlHelper.PlaceholderText="Пароль"/>
             <Button Width="200" Command="{s:Action Auth}" Style="{StaticResource AccentButtonStyle}">Войти</Button>
+            <Button Width="200" Command="{s:Action GoToReigster}" Style="{StaticResource AccentButtonStyle}">Зарегистрироваться</Button>
             <Button Width="200" Command="{s:Action EnterAsGuest}">Войти как гость</Button>
         </ui:SimpleStackPanel>
     </Grid>

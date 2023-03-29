@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="https://github.com/canton7/Stylet"
         xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:TitleBar.Background="{StaticResource SystemControlBackgroundAccentBrush}"
         ui:WindowHelper.UseModernWindowStyle="True"
         ui:TitleBar.BackButtonCommand="{s:Action Method=HandleBackPress}"
         ui:TitleBar.IsBackEnabled="True"
@@ -13,10 +14,9 @@
         xmlns:vm="clr-namespace:WriteDry.ViewModels"
         mc:Ignorable="d"
         ui:TitleBar.IsIconVisible="True"
-        Height="400" Width="800"
+        Height="450" Width="800"
         d:DataContext="{d:DesignInstance vm:ShellViewModel}"
         Title="Write Dry" MinHeight="400" MinWidth="800">
-    <Grid>
+    
         <ContentControl s:View.Model="{Binding ActiveItem}"/>
-    </Grid>
 </Window>

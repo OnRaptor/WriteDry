@@ -5,10 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+
 using WriteDry.Models;
 using WriteDry.PdfMarkup;
 using WriteDry.Services;
 using WriteDry.Utils;
+using WriteDry.ViewModels.Component;
+using WriteDry.ViewModels.Framework;
 using Point = WriteDry.Db.Models.Point;
 
 namespace WriteDry.ViewModels
@@ -21,6 +24,8 @@ namespace WriteDry.ViewModels
         public string AuthorizedUser { get; set; }
 
         private ClientService _clientService;
+        private DialogManager _dialogManager;
+        private IViewModelFactory _viewModelFactory;
         private ApplicationContext db;
         private List<PointEx> _points;
         private Point _selectedPickupPoint { get; set; }
@@ -29,23 +34,30 @@ namespace WriteDry.ViewModels
             public string FullAddress { get; set; }
             public Point Point;
         }
-        public OrderViewModel(ClientService clientService, ApplicationContext applicationContext) {
+        public OrderViewModel(ClientService clientService, ApplicationContext applicationContext, DialogManager dialogManager, IViewModelFactory viewModelFactory)
+        {
             _clientService = clientService;
             db = applicationContext;
+            _dialogManager = dialogManager;
+            _viewModelFactory = viewModelFactory;
         }
-        protected override void OnActivate() {
+        protected override void OnActivate()
+        {
             CartItems = new BindableCollection<Cart.CartItem>(_clientService.UserCart.CartItems);
             CalculateStatistic();
             AuthorizedUser = UserFIO.GetFIO(_clientService.authorizedUser);
-            _points = db.Points.Select(point => new PointEx {
+            _points = db.Points.Select(point => new PointEx
+            {
                 Point = point,
                 FullAddress = string.Join(" ", point.City, point.Street, point.House)
             }).ToList();
             base.OnActivate();
         }
-        public async void CreateOrder() {
-            if (_selectedPickupPoint == null || CartItems.Count == 0) {
-                MessageBox.Show("Точка доставки не может быть не выбрана и должно быть выбрано больше 0 товаров");
+        public async void CreateOrder()
+        {
+            if (_selectedPickupPoint == null || CartItems.Count == 0)
+            {
+                await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Точка доставки не может быть не выбрана и должно быть выбрано больше 0 товаров"));
                 return;
             }
             var codeToPickup = new Random().Next(100, 999);
@@ -64,7 +76,8 @@ namespace WriteDry.ViewModels
             _clientService.UserCart.CartItems.Clear();
             CalculateStatistic();
         }
-        public void RemoveItem(Cart.CartItem item) {
+        public void RemoveItem(Cart.CartItem item)
+        {
             CartItems.Remove(item);
             _clientService.UserCart.CartItems.Remove(item);
             CalculateStatistic();
@@ -74,22 +87,27 @@ namespace WriteDry.ViewModels
         public void OnPickupPointSuggestionChanged(object sender, AutoSuggestBoxSuggestionChosenEventArgs args) =>
             _selectedPickupPoint = ((PointEx)args.SelectedItem).Point;
 
-        public void OnPickupPointFinding(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) {
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput) {
+        public void OnPickupPointFinding(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
                 sender.ItemsSource = _points.FindAll(item => item.FullAddress.ToLower().Contains(sender.Text.ToLower()));
                 _selectedPickupPoint = null;
             }
         }
 
-        public void CalculateStatistic() {
-            if (CartItems == null || CartItems.Count == 0) {
+        public void CalculateStatistic()
+        {
+            if (CartItems == null || CartItems.Count == 0)
+            {
                 OrderCost = 0;
                 TotalDiscountAmount = 0;
                 return;
             }
             float cost = 0;
             float discount = 0;
-            foreach (var item in CartItems) {
+            foreach (var item in CartItems)
+            {
                 cost += Calculations.CalculateDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
                 discount += Calculations.GetDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
             }

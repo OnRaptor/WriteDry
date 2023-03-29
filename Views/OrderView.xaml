@@ -61,27 +61,27 @@
                                     </Border>
                                 <TextBlock DockPanel.Dock="Right" Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
                                 <StackPanel Margin="10 0">
-                                        <TextBlock Text="{Binding Product.ProductNameNavigation.ProductName}" FontWeight="Bold" />
-                                        <TextBlock Text="{Binding Product.ProductDescription}"/>
-                                        <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="Цена: "/>
-                                                <TextBlock 
+                                    <TextBlock Text="{Binding Product.ProductNameNavigation.ProductName}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Product.ProductDescription}"/>
+                                    <TextBlock Text="{Binding Product.ProductManufacturerNavigation.ProductManufacturer,  StringFormat={}Производитель: {0}}"/>
+                                    <TextBlock>
+                                        <TextBlock.Inlines>
+                                            <Run Text="Цена: "/>
+                                            <TextBlock 
                                                  Text="{Binding Product.ProductCost, StringFormat={}{0:C}, ConverterCulture=ru-RU}"
                                                  Visibility="{Binding ShouldDisplayFakeCost,Mode=OneTime, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
                                                  TextDecorations="Strikethrough"/>
-                                                <Run Text="{Binding CalculatedCostWithDiscount,Mode=OneTime, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
-                                            </TextBlock.Inlines>
+                                            <Run Text="{Binding CalculatedCostWithDiscount,Mode=OneTime, StringFormat={}{0:C}, ConverterCulture=ru-RU}"/>
+                                        </TextBlock.Inlines>
                                     </TextBlock>
-                                        <ui:NumberBox Minimum="1" ValueChanged="{s:Action CalculateStatistic}" HorizontalAlignment="Left" Width="140" SpinButtonPlacementMode="Inline" Header="Количество:" Value="{Binding Count}"/>
-                                    </StackPanel>
-                                <DockPanel.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Удалить товар" Command="{s:Action RemoveItem}" CommandParameter="{Binding}"/>
-                                    </ContextMenu>
-                                </DockPanel.ContextMenu>
+                                    <ui:NumberBox Minimum="1" ValueChanged="{s:Action CalculateStatistic}" HorizontalAlignment="Left" Width="140" SpinButtonPlacementMode="Inline" Header="Количество:" Value="{Binding Count}"/>
+                                </StackPanel>
                             </DockPanel>
+                            <Border.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Удалить товар" Command="{s:Action RemoveItem}" CommandParameter="{Binding}"/>
+                                </ContextMenu>
+                            </Border.ContextMenu>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

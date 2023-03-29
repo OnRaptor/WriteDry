@@ -7,7 +7,8 @@ namespace WriteDry.Views
     /// </summary>
     public partial class OrderView : UserControl
     {
-        public OrderView() {
+        public OrderView()
+        {
             InitializeComponent();
         }
     }

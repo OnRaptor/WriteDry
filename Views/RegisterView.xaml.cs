@@ -3,11 +3,11 @@
 namespace WriteDry.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ListView.xaml
+    /// Логика взаимодействия для RegisterView.xaml
     /// </summary>
-    public partial class ListView : UserControl
+    public partial class RegisterView : UserControl
     {
-        public ListView()
+        public RegisterView()
         {
             InitializeComponent();
         }

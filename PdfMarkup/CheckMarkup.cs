@@ -12,7 +12,8 @@ namespace WriteDry.PdfMarkup
 {
     public static class CheckMarkup
     {
-        public static string GenerateMarkup(Cart cart, float OrderAmmount, float DiscountAmmount, Point PickupPoint, int OrderCode, int OrderNumber) {
+        public static string GenerateMarkup(Cart cart, float OrderAmmount, float DiscountAmmount, Point PickupPoint, int OrderCode, int OrderNumber)
+        {
             var filename = $"Талон за {DateOnly.FromDateTime(DateTime.Now).ToString("d")}.pdf";
             PdfWriter writer = new(filename);
             PdfDocument pdf = new(writer);
@@ -86,7 +87,8 @@ namespace WriteDry.PdfMarkup
                .SetFont(comic)
                .SetFontSize(16));
 
-            foreach (var item in cart.CartItems) {
+            foreach (var item in cart.CartItems)
+            {
                 tableOrder.AddCell(new Paragraph(item.Product.ProductNameNavigation.ProductName)
                .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
                .SetFont(comic)

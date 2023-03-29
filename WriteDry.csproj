@@ -15,6 +15,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Visual Studio 2022\**" />
+    <EmbeddedResource Remove="Visual Studio 2022\**" />
+    <None Remove="Visual Studio 2022\**" />
+    <Page Remove="Visual Studio 2022\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Assets\DB\A346R4.jpg" />
     <None Remove="Assets\DB\A543T6.jpg" />
     <None Remove="Assets\DB\B730E2.jpg" />
@@ -58,6 +65,7 @@
 	
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="FluentValidation" Version="11.5.1" />
     <PackageReference Include="itext7" Version="7.2.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
       <PrivateAssets>all</PrivateAssets>
