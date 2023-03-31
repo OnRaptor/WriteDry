@@ -1,26 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WriteDry.Db.Models
+namespace WriteDry;
+
+public partial class Order
 {
-    public partial class Order
-    {
-        public int OrderId { get; set; }
+    public int OrderId { get; set; }
 
-        public DateOnly OrderDate { get; set; }
+    public string OrderStatus { get; set; }
 
-        public DateOnly OrderDeliveryDate { get; set; }
+    public DateTime OrderDeliveryDate { get; set; }
 
-        public int OrderPickupPoint { get; set; }
+    public int OrderPickupPoint { get; set; }
 
-        public string OrderFullName { get; set; } = null!;
+    public string OrderFullname { get; set; }
 
-        public int OrderCode { get; set; }
+    public int OrderCode { get; set; }
 
-        public string OrderStatus { get; set; } = null!;
+    public DateOnly OrderDate { get; set; }
 
-        public virtual Point OrderPickupPointNavigation { get; set; } = null!;
-
-        public virtual ICollection<Orderproduct> Orderproducts { get; } = new List<Orderproduct>();
-    }
+    public virtual Point OrderPickupPointNavigation { get; set; }
 }

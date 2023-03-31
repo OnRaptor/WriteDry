@@ -41,6 +41,7 @@ namespace WriteDry.ViewModels
             _productsCache = ProductViewModel.CreateCollectionFromProductList(dbContext.Products.ToList());
             Products.Clear();
             Products.AddRange(_productsCache);
+            MaxProductsCount = Products.Count;
         }
 
 
@@ -97,6 +98,21 @@ namespace WriteDry.ViewModels
             var result = await _dialogManager.ShowDialogAsync(
                 _viewModelFactory.CreateAddProductViewModel()
                 );
+            if (result == null) return;
+            var name = await dbContext.Pnames.AddAsync(new() { ProductName = result.name });
+            //await dbContext.SaveChangesAsync(); скорее всего надо оставить
+            result.product.ProductName = name.Entity.PnameId; // obtains id only after save changes
+            await dbContext.Products.AddAsync(result.product);
+            try
+            {
+                await dbContext.SaveChangesAsync();
+            } catch {
+                // нужно сделать отмену сохранения имени
+                await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Ошибка в заполнении данных"));
+                AddProduct();
+                return;
+            };
+            this.LoadProducts();
         }
         public async void EditProduct(ProductViewModel product)
         {
@@ -112,16 +128,12 @@ namespace WriteDry.ViewModels
                 var _product = dbContext.Products.Find(product.Product.ProductArticleNumber);
                 _product.ProductDiscountAmount = (sbyte)result.Discount;
                 _product.ProductQuantityInStock = result.Quantity;
+                _product.ProductStatus = result.Status;
                 await dbContext.SaveChangesAsync();
             }
         }
         private void LoadProductsToViewItems() => Products = new BindableCollection<ProductViewModel>(_productsCache);
         private void LoadProductsToViewItems(List<ProductViewModel> items) => Products = new BindableCollection<ProductViewModel>(items);
-        protected override void OnActivate()
-        {
-            LoadProducts();
-            MaxProductsCount = Products.Count;
-            base.OnActivate();
-        }
+        protected override void OnActivate() => LoadProducts();
     }
 }

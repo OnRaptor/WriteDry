@@ -7,7 +7,7 @@
       xmlns:s="https://github.com/canton7/Stylet"
       xmlns:ui="http://schemas.modernwpf.com/2019"
       mc:Ignorable="d"
-      xmlns:models="clr-namespace:WriteDry.Db.Models"
+       
       xmlns:vm="clr-namespace:WriteDry.ViewModels"       
       d:DataContext="{d:DesignInstance vm:ListViewModel}"
       xmlns:c="clr-namespace:WriteDry.Convertor"

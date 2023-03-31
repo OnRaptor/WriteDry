@@ -9,6 +9,8 @@ namespace WriteDry.ViewModels.Framework
 
         public event EventHandler? Closed;
 
+        public virtual void OnLaunch() { }
+
         public void Close(T? dialogResult = default)
         {
             DialogResult = dialogResult;

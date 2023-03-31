@@ -1,6 +1,9 @@
 ﻿using FluentValidation;
 using Stylet;
 using StyletIoC;
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using WriteDry.Services;
@@ -29,14 +32,16 @@ namespace WriteDry
         protected override async void OnLaunch()
         {
             base.OnLaunch();
+            Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/Assets/DB/");
             Stylet.Logging.LogManager.Enabled = true;
             var navigationController = this.Container.Get<NavigationController>();
             navigationController.Delegate = this.RootViewModel;
             navigationController.NavigateToAuth();
             this.Container.Get<ListViewModel>();
             await db.EnsureConnectionAsync();
-            db.PNames.ToList();
-            db.PManufacturers.ToList();
+            db.Pnames.ToList();
+            db.Pmanufacturers.ToList();
+            db.Products.ToList();
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using WriteDry.Db.Models;
+ 
 
 namespace WriteDry.Services
 {
@@ -22,7 +22,7 @@ namespace WriteDry.Services
 
             AuthorizedUser = e.newUserAuth;
             db.Products.ToList();
-            db.OrderProducts.ToList();
+            db.Orderproducts.ToList();
             Orders = db.Orders.ToList();
         }
     }

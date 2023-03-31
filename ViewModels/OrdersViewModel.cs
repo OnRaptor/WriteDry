@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WriteDry.Db.Models;
+ 
 using WriteDry.Services;
 using WriteDry.Utils;
 using WriteDry.ViewModels.Component;
@@ -92,9 +92,9 @@ namespace WriteDry.ViewModels
         public void OnDateChange(OrderItemViewModel item, DateTime newDate)
         {
             var order = dbContext.Orders.Find(item.Order.OrderId);
-            if (order == null || order.OrderDeliveryDate == DateOnly.FromDateTime(newDate))//Ignore same changes
+            if (order == null || order.OrderDeliveryDate == newDate)//Ignore same changes
                 return;
-            order.OrderDeliveryDate = DateOnly.FromDateTime(newDate);
+            order.OrderDeliveryDate = newDate;
             dbContext.SaveChanges();
         }
         public void OnStatusChange(OrderItemViewModel item, OrderStatusItem newStatus)
@@ -116,7 +116,8 @@ namespace WriteDry.ViewModels
                 item => vmFactory.CreateOrderItemViewModel(
                     item,
                     OnDateChange,
-                    OnStatusChange
+                    OnStatusChange,
+                    dbContext.Orderproducts.ToList().FindAll(p => p.OrderId == item.OrderId)
                     )
             ));
             _orderItemsCache = Orders.ToList();

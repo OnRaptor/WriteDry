@@ -24,6 +24,7 @@ namespace WriteDry.ViewModels.Framework
             try
             {
                 var dialog = view as ContentDialog;
+                dialogScreen.OnLaunch();
                 await dialog.ShowAsync();
                 return dialogScreen.DialogResult;
             }

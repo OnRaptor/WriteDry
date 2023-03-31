@@ -12,7 +12,6 @@ using WriteDry.Services;
 using WriteDry.Utils;
 using WriteDry.ViewModels.Component;
 using WriteDry.ViewModels.Framework;
-using Point = WriteDry.Db.Models.Point;
 
 namespace WriteDry.ViewModels
 {

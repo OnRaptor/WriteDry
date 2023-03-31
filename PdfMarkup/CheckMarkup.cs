@@ -5,7 +5,7 @@ using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using System;
-using WriteDry.Db.Models;
+ 
 using WriteDry.Models;
 
 namespace WriteDry.PdfMarkup

@@ -6,18 +6,37 @@
              xmlns:local="clr-namespace:WriteDry.Views"
              mc:Ignorable="d" 
              xmlns:s="https://github.com/canton7/Stylet"
-             xmlns:ui="http://schemas.modernwpf.com/2019"
-             xmlns:models="clr-namespace:WriteDry.Db.Models"
+             xmlns:ui="http://schemas.modernwpf.com/2019" 
              xmlns:vm="clr-namespace:WriteDry.ViewModels"   
              CloseButtonText="Отмена"
              Title="Добавление продукта"
              PrimaryButtonText="Добавить"
              PrimaryButtonStyle="{StaticResource AccentButtonStyle}"
              PrimaryButtonCommand="{s:Action Apply}"
-             CloseButtonCommand="{s:Action Cancel}"
+             CloseButtonCommand="{s:Action Close}"
              d:DataContext="{d:DesignInstance vm:AddProductViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <ui:SimpleStackPanel Spacing="10">
-        
-    </ui:SimpleStackPanel>
+    <ui:ScrollViewerEx Width="250" Padding="7 0">
+        <ui:SimpleStackPanel Spacing="10">
+            <TextBox Text="{Binding Name, Mode=TwoWay}" ui:ControlHelper.PlaceholderText="Название"/>
+            <TextBox Text="{Binding Description, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3" ui:ControlHelper.PlaceholderText="Описание"/>
+            <TextBox Text="{Binding Article,Mode=TwoWay}" ui:ControlHelper.PlaceholderText="Артикуль"/>
+            <ComboBox SelectedValue="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Categories}" SelectedValuePath="Id" DisplayMemberPath="CategoryName" ui:ControlHelper.PlaceholderText="Категория" HorizontalAlignment="Stretch"/>
+            <ComboBox SelectedValue="{Binding SelectedManufacturer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Manufacturers}" SelectedValuePath="PmanufacturerId" DisplayMemberPath="ProductManufacturer" ui:ControlHelper.PlaceholderText="Производитель" HorizontalAlignment="Stretch"/>
+            <ComboBox SelectedValue="{Binding SelectedProvider, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Providers}" SelectedValuePath="Id" DisplayMemberPath="ProviderName" ui:ControlHelper.PlaceholderText="Поставщик" HorizontalAlignment="Stretch"/>
+            <ui:NumberBox Minimum="1" ValidationMode="InvalidInputOverwritten" Value="{Binding Price, Mode=TwoWay}" SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Цена"/>
+            <ui:NumberBox Minimum="0" Value="{Binding Discount, Mode=TwoWay}" SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Скидка"/>
+            <ui:NumberBox Minimum="1" Value="{Binding QunatityInStock, Mode=TwoWay}"  SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Кол-во на складе"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="70"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Foreground="#959595" VerticalAlignment="Center" Margin="0 0 10 0" TextWrapping="Wrap" Text="{Binding PhotoPath, Mode=OneWay}"/>
+                <Button Command="{s:Action PickPhoto}" Margin="5 0" HorizontalAlignment="Stretch" Grid.Column="1">
+                    <ui:SymbolIcon Symbol="OpenFile"/>
+                </Button>
+            </Grid>
+        </ui:SimpleStackPanel>
+    </ui:ScrollViewerEx>
 </ui:ContentDialog>

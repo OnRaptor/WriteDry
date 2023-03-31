@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Windows.Data;
 
 namespace WriteDry.Convertor
@@ -14,7 +16,7 @@ namespace WriteDry.Convertor
             if (string.IsNullOrWhiteSpace(filename))
                 return "/Assets/picture.png";
             else
-                return "/Assets/DB/" + filename;
+                return Directory.GetCurrentDirectory() + "/Assets/DB/" + filename;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

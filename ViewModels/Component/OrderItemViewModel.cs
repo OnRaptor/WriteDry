@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
-using WriteDry.Db.Models;
+ 
 using WriteDry.Utils;
 using WriteDry.ViewModels.Framework;
 
@@ -51,7 +51,6 @@ namespace WriteDry.ViewModels.Component
         public void Init()
         {
             CurrentStatus = OrderStatusItem.CreateStatusFromString(Order.OrderStatus).IsNew ? 0 : 1;
-            OrderProducts = new List<Orderproduct>(Order.Orderproducts);
             OrderProducts.ForEach(item => TotalCost += item.ProductArticleNumberNavigation.ProductCost * item.ProductCount);
             OrderProducts.ForEach(item => TotalDiscount += Calculations.GetDiscount(item.ProductArticleNumberNavigation.ProductCost, (float)item.ProductArticleNumberNavigation.ProductDiscountAmount));
             if (OrderProducts.All(item => item.ProductArticleNumberNavigation.ProductQuantityInStock > 3))
@@ -69,12 +68,15 @@ namespace WriteDry.ViewModels.Component
             this IViewModelFactory factory,
             Order order,
             OrderItemViewModel.OnDateChanged OnDateChanged,
-            OrderItemViewModel.OnStatusChange OnStatusChange)
+            OrderItemViewModel.OnStatusChange OnStatusChange,
+            List<Orderproduct> products
+            )
         {
             var vm = factory.CreateOrderItemViewModel();
             vm.onDateChanged = OnDateChanged;
             vm.onStatusChange = OnStatusChange;
             vm.Order = order;
+            vm.OrderProducts = products;
             vm.Init();
             return vm;
         }

@@ -80,7 +80,7 @@
                                         <TextBlock Margin="10 0" Text="{Binding Order.OrderDate, StringFormat=Дата заказа:{0:D}, ConverterCulture=ru-RU}"/>
                                         <TextBlock Margin="10 0" Text="{Binding TotalCost, StringFormat=Итоговая стоимость:{0:C2}, ConverterCulture=ru-RU}"/>
                                         <TextBlock Margin="10 0" Text="{Binding TotalDiscount, StringFormat=Итоговая скидка:{0:C2}, ConverterCulture=ru-RU}"/>
-                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderFullName, StringFormat=ФИО: {0}}"/>
+                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderFullname, StringFormat=ФИО: {0}}"/>
                                         <TextBlock Margin="10 0" Text="{Binding Order.OrderCode, StringFormat=Код заказа:{0}}"/>
                                     </StackPanel>
                                     <Border CornerRadius="12" Visibility="{Binding ShouldDisplayOrderProducts, Converter={x:Static s:BoolToVisibilityConverter.Instance}, NotifyOnSourceUpdated=True}" BorderBrush="Gray" Padding="3" Margin="3" BorderThickness="2" >

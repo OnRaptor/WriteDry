@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace WriteDry.Db.Models
+namespace WriteDry;
+
+public partial class Pname
 {
-    public class Pname
-    {
-        public int PnameId { get; set; }
+    public int PnameId { get; set; }
 
-        public string ProductName { get; set; } = null!;
+    public string ProductName { get; set; }
 
-        public virtual ICollection<Product> Products { get; } = new List<Product>();
-    }
+    public virtual ICollection<Product> Products { get; } = new List<Product>();
 }

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WriteDry.Db.Models;
+ 
 using WriteDry.Models;
 using WriteDry.Utils;
 
@@ -78,9 +78,9 @@ namespace WriteDry.Services
             var order = new Order
             {
                 OrderDate = DateOnly.FromDateTime(DateTime.Now),
-                OrderDeliveryDate = DateOnly.FromDateTime(DateTime.Now.AddDays(UserCart.CartItems.FirstOrDefault(a => a.Product.ProductQuantityInStock < 3) != null ? 3 : 6)),
+                OrderDeliveryDate = DateTime.Now.AddDays(UserCart.CartItems.FirstOrDefault(a => a.Product.ProductQuantityInStock < 3) != null ? 3 : 6),
                 OrderPickupPoint = PickupPoint.PointId,
-                OrderFullName = isGuestEntered ? "" : UserFIO.GetFIO(authorizedUser),
+                OrderFullname = isGuestEntered ? "" : UserFIO.GetFIO(authorizedUser),
                 OrderCode = codeToPickup,
                 OrderStatus = "Новый"
             };
@@ -90,7 +90,7 @@ namespace WriteDry.Services
 
             foreach (var cartItem in UserCart.CartItems)
             {
-                await db.OrderProducts.AddAsync(new Orderproduct
+                await db.Orderproducts.AddAsync(new Orderproduct
                 {
                     OrderId = order.OrderId,
                     ProductArticleNumber = cartItem.Product.ProductArticleNumber,
@@ -114,6 +114,7 @@ namespace WriteDry.Services
             };
             await db.Users.AddAsync(user);
             await db.SaveChangesAsync(true);
+            
             OnAuthStateChanged(this, new()
             {
                 IsSuccesfulRegistration = true,

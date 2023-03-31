@@ -7,19 +7,22 @@ namespace WriteDry.ViewModels
     {
         public int Quantity { get; set; }
         public int Discount { get; set; }
+        public string Status { get; set; }
         public bool Canceled { get; set; }
     }
     public class EditProductViewModel : DialogScreen<EditProductDialogResult>
     {
         public string Quantity { get; set; }
         public string Discount { get; set; }
+        public string Status { get; set; }
 
         public void Apply()
         {
             this.Close(new()
             {
                 Discount = int.Parse(Discount),
-                Quantity = int.Parse(Quantity)
+                Quantity = int.Parse(Quantity),
+                Status = Status
             });
         }
 
@@ -34,6 +37,7 @@ namespace WriteDry.ViewModels
             var vm = viewModelFactory.CreateEditProductViewModel();
             vm.Quantity = product.Product.ProductQuantityInStock.ToString();
             vm.Discount = product.Product.ProductDiscountAmount.ToString();
+            vm.Status = product.Product.ProductStatus ?? "Активный";
             return vm;
         }
     }

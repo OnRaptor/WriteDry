@@ -22,16 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Assets\DB\A346R4.jpg" />
-    <None Remove="Assets\DB\A543T6.jpg" />
-    <None Remove="Assets\DB\B730E2.jpg" />
-    <None Remove="Assets\DB\D419T7.png" />
-    <None Remove="Assets\DB\F719R5.jpg" />
-    <None Remove="Assets\DB\G278R6.png" />
-    <None Remove="Assets\DB\H452A3.png" />
-    <None Remove="Assets\DB\R259E6.jpg" />
-    <None Remove="Assets\DB\T564P5.jpg" />
-    <None Remove="Assets\DB\А112Т4.jpg" />
     <None Remove="Assets\Face.png" />
     <None Remove="Assets\logo.png" />
     <None Remove="Assets\picture.png" />
@@ -47,16 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\DB\A346R4.jpg" />
-    <Resource Include="Assets\DB\A543T6.jpg" />
-    <Resource Include="Assets\DB\B730E2.jpg" />
-    <Resource Include="Assets\DB\D419T7.png" />
-    <Resource Include="Assets\DB\F719R5.jpg" />
-    <Resource Include="Assets\DB\G278R6.png" />
-    <Resource Include="Assets\DB\H452A3.png" />
-    <Resource Include="Assets\DB\R259E6.jpg" />
-    <Resource Include="Assets\DB\T564P5.jpg" />
-    <Resource Include="Assets\DB\А112Т4.jpg" />
     <Resource Include="Assets\Face.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

@@ -8,7 +8,6 @@
              mc:Ignorable="d" 
              xmlns:s="https://github.com/canton7/Stylet"
              xmlns:ui="http://schemas.modernwpf.com/2019"
-             xmlns:models="clr-namespace:WriteDry.Db.Models"
              xmlns:vm="clr-namespace:WriteDry.ViewModels"   
              CloseButtonText="Отмена"
              Title="Изменение данных продукта"
@@ -21,5 +20,6 @@
     <ui:SimpleStackPanel Spacing="10">
         <TextBox Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" ui:ControlHelper.PlaceholderText="Кол-во на складе"/>
         <TextBox Text="{Binding Discount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" ui:ControlHelper.PlaceholderText="Скидка"/>
+        <TextBox Text="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.PlaceholderText="Статус"/>
     </ui:SimpleStackPanel>
 </ui:ContentDialog>
