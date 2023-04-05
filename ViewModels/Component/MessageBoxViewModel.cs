@@ -6,6 +6,7 @@ namespace WriteDry.ViewModels.Component
     {
         public string Title { get; set; }
         public string Message { get; set; }
+        public string PrimaryButtonText { get; set; } = "OK";
 
         public void CloseDialog()
         {
@@ -20,6 +21,15 @@ namespace WriteDry.ViewModels.Component
             var vm = factory.CreateMessageBoxViewModel();
             vm.Title = title;
             vm.Message = message;
+            return vm;
+        }
+
+        public static MessageBoxViewModel CreateMessageBoxViewModel(this IViewModelFactory factory, string title, string message, string primaryButtonText)
+        {
+            var vm = factory.CreateMessageBoxViewModel();
+            vm.Title = title;
+            vm.Message = message;
+            vm.PrimaryButtonText = primaryButtonText;
             return vm;
         }
     }

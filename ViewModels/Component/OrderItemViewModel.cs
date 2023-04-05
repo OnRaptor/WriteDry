@@ -52,7 +52,7 @@ namespace WriteDry.ViewModels.Component
         {
             CurrentStatus = OrderStatusItem.CreateStatusFromString(Order.OrderStatus).IsNew ? 0 : 1;
             OrderProducts.ForEach(item => TotalCost += item.ProductArticleNumberNavigation.ProductCost * item.ProductCount);
-            OrderProducts.ForEach(item => TotalDiscount += Calculations.GetDiscount(item.ProductArticleNumberNavigation.ProductCost, (float)item.ProductArticleNumberNavigation.ProductDiscountAmount));
+            OrderProducts.ForEach(item => TotalDiscount += ProductCalculations.GetDiscount(item.ProductArticleNumberNavigation.ProductCost, (float)item.ProductArticleNumberNavigation.ProductDiscountAmount));
             if (OrderProducts.All(item => item.ProductArticleNumberNavigation.ProductQuantityInStock > 3))
                 DisplayedColor = new SolidColorBrush(Color.FromRgb(32, 178, 170));
             else if (OrderProducts.Any(item => item.ProductArticleNumberNavigation.ProductQuantityInStock == 0))

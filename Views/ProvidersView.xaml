@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="WriteDry.Views.ProvidersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WriteDry.Views"
+             xmlns:s="https://github.com/canton7/Stylet"
+              xmlns:ui="http://schemas.modernwpf.com/2019"
+              mc:Ignorable="d" 
+              xmlns:vm="clr-namespace:WriteDry.ViewModels"       
+              d:DataContext="{d:DesignInstance vm:ProvidersViewModel}"
+              xmlns:c="clr-namespace:WriteDry.Convertor"
+              d:DesignHeight="450" d:DesignWidth="800"> 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="10 0" Orientation="Horizontal">
+            <Ellipse Width="30" Height="30">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="/Assets/logo.png"/>
+                </Ellipse.Fill>
+            </Ellipse>
+            <StackPanel>
+                <Label VerticalAlignment="Center">Поставщики</Label>
+                <TextBlock Text="{Binding Providers.Count, StringFormat=Кол-во: {0}}"/>
+            </StackPanel>
+        </StackPanel>
+        <ItemsControl ItemsSource="{Binding Providers}" Grid.Row="1">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border CornerRadius="15" BorderThickness="2" BorderBrush="Black" Margin="10" Padding="10">
+                        <Grid>
+                            <TextBlock Text="{Binding ProviderName}" VerticalAlignment="Center" FontSize="22"/>
+                            <ui:SimpleStackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Command="{Binding EditProvider}" CommandParameter="{Binding}">Редактировать</Button>
+                            </ui:SimpleStackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+
+        <Button Panel.ZIndex="1" Width="40" Height="40" ui:ControlHelper.CornerRadius="50" Style="{StaticResource AccentButtonStyle}" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1">
+            <ui:SymbolIcon Symbol="Add"/>
+            <Button.Effect>
+                <DropShadowEffect BlurRadius="30" Opacity="0.5"/>
+            </Button.Effect>
+        </Button>
+    </Grid>
+</UserControl>

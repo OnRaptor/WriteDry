@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WriteDry.Views"
         mc:Ignorable="d"       
-        CloseButtonText="OK"
+        CloseButtonText="{Binding PrimaryButtonText}"
         CloseButtonStyle="{StaticResource AccentButtonStyle}"
         xmlns:s="https://github.com/canton7/Stylet"
         Title="{Binding Title}"

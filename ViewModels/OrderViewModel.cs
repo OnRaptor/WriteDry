@@ -83,8 +83,8 @@ namespace WriteDry.ViewModels
         }
         public void OnPickupPointFocus(object sender, RoutedEventArgs args)
             => ((AutoSuggestBox)sender).ItemsSource = _points;
-        public void OnPickupPointSuggestionChanged(object sender, AutoSuggestBoxSuggestionChosenEventArgs args) =>
-            _selectedPickupPoint = ((PointEx)args.SelectedItem).Point;
+        public void OnPickupPointSuggestionChanged(object sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+            => _selectedPickupPoint = ((PointEx)args.SelectedItem).Point;
 
         public void OnPickupPointFinding(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
@@ -107,8 +107,8 @@ namespace WriteDry.ViewModels
             float discount = 0;
             foreach (var item in CartItems)
             {
-                cost += Calculations.CalculateDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
-                discount += Calculations.GetDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
+                cost += ProductCalculations.CalculateCostWithDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
+                discount += ProductCalculations.GetDiscount(item.Product.ProductCost * item.Count, (float)item.Product.ProductDiscountAmount);
             }
             OrderCost = cost;
             TotalDiscountAmount = discount;

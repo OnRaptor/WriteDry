@@ -1,6 +1,9 @@
-﻿using Stylet;
+﻿using Microsoft.EntityFrameworkCore;
+using Stylet;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using WriteDry.Services;
 using WriteDry.Utils;
 using WriteDry.ViewModels.Component;
@@ -98,21 +101,26 @@ namespace WriteDry.ViewModels
             var result = await _dialogManager.ShowDialogAsync(
                 _viewModelFactory.CreateAddProductViewModel()
                 );
-            if (result == null) return;
+            if (result == null || string.IsNullOrWhiteSpace(result.name)) return;           
             var name = await dbContext.Pnames.AddAsync(new() { ProductName = result.name });
-            //await dbContext.SaveChangesAsync(); скорее всего надо оставить
+            await dbContext.SaveChangesAsync();
             result.product.ProductName = name.Entity.PnameId; // obtains id only after save changes
-            await dbContext.Products.AddAsync(result.product);
+            var product = await dbContext.Products.AddAsync(result.product);
             try
             {
                 await dbContext.SaveChangesAsync();
-            } catch {
-                // нужно сделать отмену сохранения имени
-                await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Ошибка в заполнении данных"));
+                this.LoadProducts();
+                await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Успех", "Продукт добавлен"));
+            }
+            catch {
+                product.State = EntityState.Detached;
+                dbContext.Pnames.Remove(name.Entity);
+                await dbContext.SaveChangesAsync();
+                await dbContext.Database.ExecuteSqlAsync($"ALTER TABLE pname AUTO_INCREMENT = {name.Entity.PnameId - 1}");
+                await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Ошибка в заполнении данных", "Попробовать ещё раз"));
                 AddProduct();
                 return;
             };
-            this.LoadProducts();
         }
         public async void EditProduct(ProductViewModel product)
         {

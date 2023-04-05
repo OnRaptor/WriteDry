@@ -11,7 +11,7 @@ namespace WriteDry.ViewModels.Component
     {
 
         public float? CalculatedCostWithDiscount
-            => Calculations.CalculateDiscount(Product.ProductCost, (float)Product.ProductDiscountAmount);
+            => ProductCalculations.CalculateCostWithDiscount(Product.ProductCost, (float)Product.ProductDiscountAmount);
 
         public Brush DisplayedColor => Product.ProductDiscountAmount > 15 ? new SolidColorBrush(Color.FromRgb(127, 255, 0)) : Brushes.White;
 

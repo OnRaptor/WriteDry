@@ -61,6 +61,7 @@ namespace WriteDry.ViewModels
         {
             if (e.Failed) return;
             UserName = e.isGuest ? "Гость" : UserFIO.GetFIO(e.newUserAuth);
+            if (e.isGuest) CanCreateOrder = false;
         }
 
         private void LoadProducts()

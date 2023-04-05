@@ -159,7 +159,7 @@ namespace WriteDry.Services
                 entity.HasKey(e => e.PnameId).HasName("PRIMARY");
 
                 entity.ToTable("pname");
-
+                
                 entity.Property(e => e.PnameId).HasColumnName("PNameID");
                 entity.Property(e => e.ProductName)
                     .IsRequired()
