@@ -59,7 +59,7 @@ namespace WriteDry.ViewModels
 
         private void HandleAuthState(object sender, ClientService.AuthArgs e)
         {
-            if (e.Failed) return;
+            if (e.Failed || e.newUserAuth == null) return;
             UserName = e.isGuest ? "Гость" : UserFIO.GetFIO(e.newUserAuth);
             if (e.isGuest) CanCreateOrder = false;
         }

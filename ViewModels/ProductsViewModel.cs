@@ -19,6 +19,7 @@ namespace WriteDry.ViewModels
         public SortItem SelectedSort { get; set; } = new SortItem { SortProduct = SortProduct.Desc };
         public FilterItem SelectedFilter { get; set; } = new FilterItem { FilterProduct = FilterProduct.All };
         public BindableCollection<ProductViewModel> Products { get; set; } = new BindableCollection<ProductViewModel>();
+        public bool IsAdmin { get; set; } = true;
 
         private NavigationController navigationController;
         private ApplicationContext dbContext;
@@ -35,8 +36,9 @@ namespace WriteDry.ViewModels
             _productsCache = productsCache;
             _dialogManager = dialogManager;
             _viewModelFactory = viewModelFactory;
-            this.DisplayName = "Продукты";
+            this.DisplayName = "Товары";
             UserName = UserFIO.GetFIO(_adminService.AuthorizedUser);
+            IsAdmin = _adminService.AuthorizedUser.UserRole != 3;
         }
 
         private void LoadProducts()

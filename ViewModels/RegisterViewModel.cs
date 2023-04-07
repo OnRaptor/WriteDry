@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
 using Stylet;
 using WriteDry.Services;
+using WriteDry.ViewModels.Component;
+using WriteDry.ViewModels.Framework;
 
 namespace WriteDry.ViewModels
 {
@@ -15,12 +17,16 @@ namespace WriteDry.ViewModels
 
         private ClientService _clientService;
         private NavigationController _navigationController;
-        public RegisterViewModel(ClientService clientService, NavigationController navigationController, IModelValidator<RegisterViewModel> validator) : base(validator)
+        private DialogManager _dialogManager;
+        private IViewModelFactory _viewModelFactory;
+        public RegisterViewModel(ClientService clientService, NavigationController navigationController, IModelValidator<RegisterViewModel> validator, DialogManager dialogManager, IViewModelFactory viewModelFactory) : base(validator)
         {
             _clientService = clientService;
             _clientService.OnAuthStateChanged += _clientService_OnAuthStateChanged;
             _navigationController = navigationController;
             this.PropertyChanged += OnPropertyChanged;
+            _dialogManager = dialogManager;
+            _viewModelFactory = viewModelFactory;
         }
 
         private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -38,10 +44,12 @@ namespace WriteDry.ViewModels
         {
             this.Validate();
         }
-        private void _clientService_OnAuthStateChanged(object sender, ClientService.AuthArgs e)
+        private async void _clientService_OnAuthStateChanged(object sender, ClientService.AuthArgs e)
         {
             if (e.IsSuccesfulRegistration)
                 _navigationController.NavigateToProducts();
+            else if(!e.IsSuccesfulRegistration || e.newUserAuth != null)
+                await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Пользователь уже существует"));
         }
         public async void Register()
         {

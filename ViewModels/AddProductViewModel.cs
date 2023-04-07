@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
+using ModernWpf.Controls;
 using Stylet;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -10,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WriteDry.Services;
 using WriteDry.ViewModels.Framework;
+using WriteDry.Views.Dialogs;
 
 namespace WriteDry.ViewModels
 {
@@ -25,7 +28,7 @@ namespace WriteDry.ViewModels
         public List<Pcategory> Categories { get; set; }
         public List<Provider> Providers { get; set; }
         public int SelectedCategory { get; set; }
-        public int SelectedManufacturer { get; set; }
+        public int SelectedManufacturer { get; set; } = -1;
         public int SelectedProvider { get; set; }
         public int Price { get; set; }
         public int Discount { get; set; }
@@ -34,6 +37,7 @@ namespace WriteDry.ViewModels
         public string Description { get; set; } = "";
         public string Article { get; set; } = "";
         public string PhotoPath { get; set; } = "";
+        public string NewManufacturer { get; set; } = "";
 
         private ApplicationContext dbContext;
         public AddProductViewModel(ApplicationContext dbContext)
@@ -55,6 +59,35 @@ namespace WriteDry.ViewModels
             Categories = await dbContext.Pcategories.ToListAsync();
             Providers = await dbContext.Providers.ToListAsync();
         }
+        
+        public async void AddManufacturer()
+        {
+            if (string.IsNullOrWhiteSpace(NewManufacturer)) return;
+            var manufacturer = new Pmanufacturer { ProductManufacturer = NewManufacturer };
+            var resolved_manufacturer = dbContext.Pmanufacturers.Add(manufacturer);
+            await dbContext.SaveChangesAsync();
+            Manufacturers = await dbContext.Pmanufacturers.ToListAsync();
+            SelectedManufacturer = resolved_manufacturer.Entity.PmanufacturerId;
+            NewManufacturer = string.Empty;
+        }
+
+        public async void DeleteManufacturer()
+        {
+            if (SelectedManufacturer == -1) return;
+            var manufacturer = dbContext.Pmanufacturers.Find(SelectedManufacturer);
+            try
+            {
+                dbContext.Pmanufacturers.Remove(manufacturer);
+                await dbContext.SaveChangesAsync();
+                Manufacturers = await dbContext.Pmanufacturers.ToListAsync();
+                SelectedManufacturer = 0;
+            }
+            catch
+            {
+                dbContext.DetachAllEntities();
+            }
+        }
+
         public void Apply()
         {
             if (!string.IsNullOrWhiteSpace(PhotoPath))

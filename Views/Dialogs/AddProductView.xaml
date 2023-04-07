@@ -22,11 +22,20 @@
             <TextBox Text="{Binding Description, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True" MaxLines="3" ui:ControlHelper.PlaceholderText="Описание"/>
             <TextBox Text="{Binding Article,Mode=TwoWay}" ui:ControlHelper.PlaceholderText="Артикуль"/>
             <ComboBox SelectedValue="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Categories}" SelectedValuePath="Id" DisplayMemberPath="CategoryName" ui:ControlHelper.PlaceholderText="Категория" HorizontalAlignment="Stretch"/>
-            <ComboBox SelectedValue="{Binding SelectedManufacturer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Manufacturers}" SelectedValuePath="PmanufacturerId" DisplayMemberPath="ProductManufacturer" ui:ControlHelper.PlaceholderText="Производитель" HorizontalAlignment="Stretch"/>
+            <GroupBox Margin="2 0" Header="Производитель">
+                <ui:SimpleStackPanel Spacing="5">
+                    <ComboBox SelectedValue="{Binding SelectedManufacturer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Manufacturers}" SelectedValuePath="PmanufacturerId" DisplayMemberPath="ProductManufacturer" ui:ControlHelper.PlaceholderText="Название" HorizontalAlignment="Stretch"/>
+                    <TextBox Text="{Binding NewManufacturer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.PlaceholderText="Новый производитель"/>
+                    <ui:SimpleStackPanel Spacing="5" Orientation="Horizontal">
+                        <Button Command="{s:Action AddManufacturer}" Style="{StaticResource AccentButtonStyle}">Добавить</Button>
+                        <Button Command="{s:Action DeleteManufacturer}" ToolTip="Удаляет вообще из базы данных">Удалить</Button>
+                    </ui:SimpleStackPanel>
+                </ui:SimpleStackPanel>
+            </GroupBox>
             <ComboBox SelectedValue="{Binding SelectedProvider, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Providers}" SelectedValuePath="Id" DisplayMemberPath="ProviderName" ui:ControlHelper.PlaceholderText="Поставщик" HorizontalAlignment="Stretch"/>
-            <ui:NumberBox Minimum="1" ValidationMode="InvalidInputOverwritten" Value="{Binding Price, Mode=TwoWay}" SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Цена"/>
-            <ui:NumberBox Minimum="0" Value="{Binding Discount, Mode=TwoWay}" SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Скидка"/>
-            <ui:NumberBox Minimum="1" Value="{Binding QunatityInStock, Mode=TwoWay}"  SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Кол-во на складе"/>
+            <ui:NumberBox ui:ControlHelper.Header="Цена" Minimum="1" ValidationMode="InvalidInputOverwritten" Value="{Binding Price, Mode=TwoWay}" SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Цена"/>
+            <ui:NumberBox ui:ControlHelper.Header="Скидка" Minimum="0" Value="{Binding Discount, Mode=TwoWay}" SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Скидка"/>
+            <ui:NumberBox ui:ControlHelper.Header="Кол-во на складе" Minimum="1" Value="{Binding QunatityInStock, Mode=TwoWay}"  SpinButtonPlacementMode="Inline" ui:ControlHelper.PlaceholderText="Кол-во на складе"/>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="170"/>

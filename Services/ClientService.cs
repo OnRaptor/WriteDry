@@ -103,6 +103,14 @@ namespace WriteDry.Services
 
         public async Task RegisterUser(string UserName, string UsesSurname, string UserPatron, string UserLogin, string UserPassword)
         {
+            var alreadyRegisteredUser = await db.Users.Where(user => user.UserLogin == UserLogin).FirstAsync();
+            if (alreadyRegisteredUser != null) {
+                OnAuthStateChanged(this, new()
+                {
+                    IsSuccesfulRegistration = false
+                });
+                return;
+            }
             var user = new User
             {
                 UserName = UserName,

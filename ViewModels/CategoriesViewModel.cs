@@ -6,15 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WriteDry.Services;
-using WriteDry.ViewModels.Component;
 using WriteDry.ViewModels.Framework;
 using WriteDry.Views.Dialogs;
 
 namespace WriteDry.ViewModels
 {
-    public class ProvidersViewModel : Screen
+    public class CategoriesViewModel : Screen
     {
-        public BindableCollection<Provider> Providers { get; set; }
+        public BindableCollection<Pcategory> Categories { get; set; }
 
         private NavigationController navigationController;
         private ApplicationContext dbContext;
@@ -22,9 +21,9 @@ namespace WriteDry.ViewModels
         private DialogManager _dialogManager;
         private IViewModelFactory _viewModelFactory;
 
-        public ProvidersViewModel(NavigationController navigationController, ApplicationContext dbContext, AdminService adminService, DialogManager dialogManager, IViewModelFactory viewModelFactory)
+        public CategoriesViewModel(NavigationController navigationController, ApplicationContext dbContext, AdminService adminService, DialogManager dialogManager, IViewModelFactory viewModelFactory)
         {
-            this.DisplayName = "Поставщики";
+            this.DisplayName = "Категории";
             this.navigationController = navigationController;
             this.dbContext = dbContext;
             _adminService = adminService;
@@ -32,39 +31,39 @@ namespace WriteDry.ViewModels
             _viewModelFactory = viewModelFactory;
         }
 
-        public async void EditProvider(Provider item)
+        public async void EditCategory(Pcategory item)
         {
-            var dialog = new GeneralPromptDialog { Title="Введите новое название для поставщика", Placeholder=item.ProviderName };
+            var dialog = new GeneralPromptDialog { Title = "Введите новое название для категории", Placeholder = item.CategoryName };
             if (await dialog.ShowAsync() == ContentDialogResult.Primary &&
                 !string.IsNullOrWhiteSpace(dialog.Text) &&
-                dialog.Text != item.ProviderName
+                dialog.Text != item.CategoryName
                 )
             {
-                dbContext.Providers.Find(item.Id).ProviderName = dialog.Text;
+                dbContext.Pcategories.Find(item.Id).CategoryName = dialog.Text;
                 dbContext.SaveChanges();
-                LoadProviders();
+                LoadCategories();
             }
         }
 
-        public async void AddProvider()
+        public async void AddCategory()
         {
-            var dialog = new GeneralPromptDialog { Title = "Введите название для поставщика" };
+            var dialog = new GeneralPromptDialog { Title = "Введите название для категории" };
             if (await dialog.ShowAsync() == ContentDialogResult.Primary &&
                 !string.IsNullOrWhiteSpace(dialog.Text)
                 )
             {
-                dbContext.Providers.Add(new Provider { ProviderName = dialog.Text }); 
+                dbContext.Pcategories.Add(new Pcategory { CategoryName = dialog.Text });
                 dbContext.SaveChanges();
-                LoadProviders();
+                LoadCategories();
             }
         }
-        private void LoadProviders()
+        private void LoadCategories()
         {
-            Providers = new BindableCollection<Provider>(dbContext.Providers.ToList());
+            Categories = new BindableCollection<Pcategory>(dbContext.Pcategories.ToList());
         }
         protected override void OnActivate()
         {
-            LoadProviders();
+            LoadCategories();
         }
     }
 }

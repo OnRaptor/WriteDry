@@ -43,10 +43,10 @@ namespace WriteDry.ViewModels
                 await _dialogManager.ShowDialogAsync(_viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Проверьте данные"));
             else if (e.IsAdmin)
                 _navigation.NavigateToAdminShell();
-            else
+            else if (e.isGuest || e.newUserAuth != null)
                 _navigation.NavigateToProducts();
         }
-
+/*
 #if DEBUG
         protected override async void OnViewLoaded()
         {
@@ -56,6 +56,6 @@ namespace WriteDry.ViewModels
             Auth();
             base.OnViewLoaded();
         }
-#endif
+#endif*/
     }
 }

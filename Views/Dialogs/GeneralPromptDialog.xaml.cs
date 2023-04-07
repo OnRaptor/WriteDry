@@ -23,6 +23,7 @@ namespace WriteDry.Views.Dialogs
     {
         public string Placeholder { get; set; } = "";
         public string Text { get; set; } = "";
+
         public GeneralPromptDialog()
         {
             InitializeComponent();
@@ -37,7 +38,6 @@ namespace WriteDry.Views.Dialogs
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             Text = text_box.Text;
-            this.Hide();
         }
     }
 }

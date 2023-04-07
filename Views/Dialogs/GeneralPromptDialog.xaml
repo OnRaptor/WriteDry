@@ -13,6 +13,6 @@
              PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBox x:Name="text_box"/>
+        <TextBox x:Name="text_box" Height="30"/>
     </Grid>
 </ui:ContentDialog>

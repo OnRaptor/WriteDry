@@ -39,6 +39,17 @@ namespace WriteDry.Services
             => optionsBuilder.UseMySql("server=localhost;user=root;password=root;database=trade", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.32-mysql"));
 
         public Task EnsureConnectionAsync() => Database.EnsureCreatedAsync();
+
+        public void DetachAllEntities()
+        {
+            var changedEntriesCopy = this.ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added ||
+                            e.State == EntityState.Modified ||
+                            e.State == EntityState.Deleted)
+                .ToList();
+            foreach (var entry in changedEntriesCopy)
+                entry.State = EntityState.Detached;
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:WriteDry.Views"
              xmlns:ui="http://schemas.modernwpf.com/2019"
              xmlns:vm="clr-namespace:WriteDry.ViewModels"  
+             x:Name="Root"
              xmlns:components="clr-namespace:WriteDry.ViewModels.Component"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance vm:ProductsViewModel}"
@@ -22,23 +23,6 @@
         </Grid.RowDefinitions>
         <DockPanel>
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Style="{StaticResource AccentButtonStyle}" ui:ControlHelper.CornerRadius="50" VerticalAlignment="Center" Margin="5 0" Padding="1">
-                    <ui:FlyoutService.Flyout>
-                        <ui:MenuFlyout AreOpenCloseAnimationsEnabled="True" Placement="BottomEdgeAlignedLeft" x:Name="Flyout1">
-                            <MenuItem Header="{Binding UserName}"/>
-                            <MenuItem
-                                Visibility="{Binding CanCreateOrder, Converter={x:Static s:BoolToVisibilityConverter.Instance}}"
-                                Command="{s:Action GoToOrders}"
-                                Header="Корзина"/>
-                        </ui:MenuFlyout>
-                    </ui:FlyoutService.Flyout>
-
-                    <Ellipse Width="30" Height="30">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="/Assets/logo.png"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-                </Button>
                 <StackPanel>
                     <Label Content="{Binding UserName}" FontSize="10"/>
                     <TextBlock HorizontalAlignment="Center">
@@ -72,7 +56,7 @@
             </ui:SimpleStackPanel>
         </DockPanel>
 
-        <Button Panel.ZIndex="1" Command="{s:Action AddProduct}" Width="40" Height="40" ui:ControlHelper.CornerRadius="50" Style="{StaticResource AccentButtonStyle}" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1">
+        <Button Visibility="{Binding IsAdmin, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" Panel.ZIndex="1" Command="{s:Action AddProduct}" Width="40" Height="40" ui:ControlHelper.CornerRadius="50" Style="{StaticResource AccentButtonStyle}" Margin="15" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1">
             <ui:SymbolIcon Symbol="Add"/>
             <Button.Effect>
                 <DropShadowEffect BlurRadius="30" Opacity="0.5"/>
@@ -85,12 +69,12 @@
                     <DataTemplate>
                         <Border Background="{Binding DisplayedColor,Mode=OneWay}" BorderBrush="#121212" Padding="5" Margin="5" BorderThickness="3" CornerRadius="15">
                             <DockPanel LastChildFill="True">
-                                <Border Margin="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
+                                <Border Padding="10 0" MinWidth="120" Height="70" CornerRadius="15" BorderThickness="2" BorderBrush="Black">
                                     <Image Source="{Binding Product.ProductPhoto,Converter={StaticResource FileNameToResourcePathConvertor}}"/>
                                 </Border>
                                 <StackPanel DockPanel.Dock="Right">
                                     <TextBlock Text="{Binding Product.ProductDiscountAmount, StringFormat={}Скидка:{0}%}"  VerticalAlignment="Center"/>
-                                    <Button Command="{s:Action EditProduct}" CommandParameter="{Binding}">Редактировать</Button>
+                                    <Button Visibility="{Binding DataContext.IsAdmin, Converter={x:Static s:BoolToVisibilityConverter.Instance},ElementName=Root}" Command="{s:Action EditProduct}" CommandParameter="{Binding}">Редактировать</Button>
                                 </StackPanel>
                                 <StackPanel HorizontalAlignment="Left" Margin="10 0">
                                     <TextBlock FontWeight="Bold" >

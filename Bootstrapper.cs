@@ -23,9 +23,9 @@ namespace WriteDry
             builder.Bind(typeof(IValidator<>)).ToAllImplementations();
             builder.Bind<NavigationController>().And<INavigationController>().To<NavigationController>().InSingletonScope();
             builder.Bind<ApplicationContext>().ToInstance(db);
-            builder.Bind<ListViewModel>().ToSelf().InSingletonScope();
             var clientService = new ClientService(db);
             builder.Bind<ClientService>().ToInstance(clientService);
+            builder.Bind<ListViewModel>().ToSelf().InSingletonScope();
             builder.Bind<AdminService>().ToInstance(new AdminService(clientService, db));
         }
 
