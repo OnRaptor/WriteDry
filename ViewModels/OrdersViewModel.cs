@@ -10,6 +10,16 @@ using WriteDry.ViewModels.Framework;
 
 namespace WriteDry.ViewModels
 {
+    public class TypeItem 
+    { 
+        public string Title { get; set; }
+
+        public ItemTypeProduct type { get; set; }
+    }
+    public enum ItemTypeProduct
+    {
+        New, Finished
+    }
     public class OrdersViewModel : Screen
     {
         public string UserName { get; set; }

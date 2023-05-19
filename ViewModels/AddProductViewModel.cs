@@ -53,11 +53,12 @@ namespace WriteDry.ViewModels
             if (openFileDialog.ShowDialog() ?? false)
                 PhotoPath = openFileDialog.FileName;
         }
-        public override async void OnLaunch()
+        public override async void OnLaunch(ContentDialog contentDialog)
         {
             Manufacturers = await dbContext.Pmanufacturers.ToListAsync();
             Categories = await dbContext.Pcategories.ToListAsync();
             Providers = await dbContext.Providers.ToListAsync();
+            this.root = contentDialog;
         }
         
         public async void AddManufacturer()
@@ -103,7 +104,6 @@ namespace WriteDry.ViewModels
             {
                 product = new Product
                 {
-                    ProductArticleNumber = Article,
                     ProductCategory = SelectedCategory,
                     ProductCost = Price,
                     ProductDescription = Description,

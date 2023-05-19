@@ -27,7 +27,7 @@ namespace WriteDry.Services
     {
         public User? authorizedUser;
         public bool isGuestEntered;
-        public Cart UserCart { get; set; }
+        public Cart UserCart { get; set; } = new();
 
         public event EventHandler<AuthArgs> OnAuthStateChanged;
 
@@ -62,7 +62,6 @@ namespace WriteDry.Services
                 {
                     authorizedUser = user;
                     isGuestEntered = false;
-                    UserCart = new();
                     if (user.UserRole == 1 || user.UserRole == 3)
                         OnAuthStateChanged(this, new AuthArgs { newUserAuth = user, IsAdmin = true });
                     else
@@ -103,8 +102,8 @@ namespace WriteDry.Services
 
         public async Task RegisterUser(string UserName, string UsesSurname, string UserPatron, string UserLogin, string UserPassword)
         {
-            var alreadyRegisteredUser = await db.Users.Where(user => user.UserLogin == UserLogin).FirstAsync();
-            if (alreadyRegisteredUser != null) {
+            var alreadyRegisteredUser = db.Users.Any(user => user.UserLogin == UserLogin);
+            if (alreadyRegisteredUser) {
                 OnAuthStateChanged(this, new()
                 {
                     IsSuccesfulRegistration = false
@@ -122,7 +121,7 @@ namespace WriteDry.Services
             };
             await db.Users.AddAsync(user);
             await db.SaveChangesAsync(true);
-            
+            this.authorizedUser = user;
             OnAuthStateChanged(this, new()
             {
                 IsSuccesfulRegistration = true,

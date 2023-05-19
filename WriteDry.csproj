@@ -45,6 +45,7 @@
 	
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.4.4" />
+    <PackageReference Include="Fare" Version="2.2.1" />
     <PackageReference Include="FluentValidation" Version="11.5.1" />
     <PackageReference Include="itext7" Version="7.2.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">

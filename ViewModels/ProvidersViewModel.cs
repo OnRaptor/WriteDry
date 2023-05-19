@@ -46,6 +46,25 @@ namespace WriteDry.ViewModels
             }
         }
 
+        public async void DeleteProvider(Provider item)
+        {
+            var dialog = new YesNoDialog { Text = "Вы действительно хотите удалить поставщика?" };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    dbContext.Providers.Remove(item);
+                    await dbContext.SaveChangesAsync();
+                    LoadProviders();
+                }
+                catch
+                {
+                    await _dialogManager.ShowDialogAsync(
+                        _viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Нельзя удалить, так как поставщик указан в существующем заказе")
+                        );
+                }
+            }
+        }
         public async void AddProvider()
         {
             var dialog = new GeneralPromptDialog { Title = "Введите название для поставщика" };

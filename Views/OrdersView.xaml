@@ -9,7 +9,6 @@
              xmlns:components="clr-namespace:WriteDry.ViewModels.Component"
              xmlns:s="https://github.com/canton7/Stylet"
              d:DataContext="{d:DesignInstance vm:OrdersViewModel}"
-             
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -33,8 +32,8 @@
             </StackPanel>
             <ui:SimpleStackPanel Margin="5 0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Spacing="5">
                 <TextBox
-                    ui:ControlHelper.PlaceholderText="Поиск по номеру заказу"
-                    Width="200"
+                    ui:ControlHelper.PlaceholderText="Номер заказа"
+                    Width="120"
                     PreviewTextInput="TextBox_PreviewTextInput"
                     Text="{Binding  SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBox.InputBindings>
@@ -44,14 +43,21 @@
                 <ComboBox 
                     SelectedItem="{Binding SelectedSort}"
                     DisplayMemberPath="Title"
-                    ui:ControlHelper.PlaceholderText="Сортировка" Width="200">
+                    ui:ControlHelper.PlaceholderText="Отображение" Width="135">
+                    <vm:TypeItem Title="Только новые" type="New"/>
+                    <vm:TypeItem Title="Только завершенные" type="Finished"/>
+                </ComboBox>
+                <ComboBox 
+                    SelectedItem="{Binding SelectedSort}"
+                    DisplayMemberPath="Title"
+                    ui:ControlHelper.PlaceholderText="Сортировка" Width="120">
                     <vm:SortItem Title="По возрастанию" SortProduct="Asc"/>
                     <vm:SortItem Title="По убыванию" SortProduct="Desc"/>
                 </ComboBox>
                 <ComboBox
                     SelectedItem="{Binding SelectedFilter}" 
                     DisplayMemberPath="Title"
-                    ui:ControlHelper.PlaceholderText="Размер скидки" Width="200">
+                    ui:ControlHelper.PlaceholderText="Размер скидки" Width="140">
                     <vm:FilterItem Title="Все диапазоны" FilterProduct="All"/>
                     <vm:FilterItem Title="0-9,99%" FilterProduct="Low"/>
                     <vm:FilterItem Title="10-14,99%, " FilterProduct="Medium"/>
@@ -67,56 +73,51 @@
                             <DockPanel LastChildFill="True">
                                 <ui:SimpleStackPanel Spacing="5" DockPanel.Dock="Right">
                                     <DatePicker ToolTipService.ToolTip="Дата доставки" ToolTipService.IsEnabled="True" s:View.ActionTarget="{Binding}" SelectedDateChanged="{s:Action DateChanged}"  SelectedDate="{Binding DeliveryDate, Mode=OneWay}" ui:ControlHelper.PlaceholderText="Дата доставки"/>
-                                    <ComboBox ToolTipService.ToolTip="Статус заказа" ToolTipService.IsEnabled="True" s:View.ActionTarget="{Binding}" DisplayMemberPath="Title" SelectedIndex="{Binding CurrentStatus}" SelectionChanged="{s:Action StatusChanged}">
-                                        <ComboBox.Items>
-                                            <components:OrderStatusItem IsNew="True" Title="Новый"/>
-                                            <components:OrderStatusItem IsNew="False" Title="Завершен"/>
-                                        </ComboBox.Items>
-                                    </ComboBox>
-                                    <Button s:View.ActionTarget="{Binding}" Command="{s:Action ToggleDisplayOrderProducts}">Отображение состава</Button>
+                                    <Button Background="Red" Foreground="White">Завершить заказ</Button>
                                 </ui:SimpleStackPanel>
                                 <StackPanel>
-                                    <StackPanel>
-                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderDate, StringFormat=Дата заказа:{0:D}, ConverterCulture=ru-RU}"/>
-                                        <TextBlock Margin="10 0" Text="{Binding TotalCost, StringFormat=Итоговая стоимость:{0:C2}, ConverterCulture=ru-RU}"/>
-                                        <TextBlock Margin="10 0" Text="{Binding TotalDiscount, StringFormat=Итоговая скидка:{0:C2}, ConverterCulture=ru-RU}"/>
-                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderFullname, StringFormat=ФИО: {0}}"/>
-                                        <TextBlock Margin="10 0" Text="{Binding Order.OrderCode, StringFormat=Код заказа:{0}}"/>
-                                    </StackPanel>
-                                    <Border CornerRadius="12" Visibility="{Binding ShouldDisplayOrderProducts, Converter={x:Static s:BoolToVisibilityConverter.Instance}, NotifyOnSourceUpdated=True}" BorderBrush="Gray" Padding="3" Margin="3" BorderThickness="2" >
-                                        <DataGrid MinColumnWidth="120" GridLinesVisibility="Vertical" RowHeaderWidth="0" SelectionUnit="FullRow" ColumnWidth="Auto" IsReadOnly="True" Background="Transparent" AutoGenerateColumns="False" ItemsSource="{Binding OrderProducts}">
-                                            <DataGrid.Columns>
-                                                <DataGridTextColumn Header="Имя" Binding="{Binding ProductArticleNumberNavigation.ProductNameNavigation.ProductName}"/>
-                                                <DataGridTextColumn Header="Описание" Binding="{Binding ProductArticleNumberNavigation.ProductDescription}"/>
-                                                <DataGridTextColumn Header="Производитель" Binding="{Binding ProductArticleNumberNavigation.ProductManufacturerNavigation.ProductManufacturer}"/>
-                                                <DataGridTextColumn Header="Цена" Binding="{Binding ProductArticleNumberNavigation.ProductCost, StringFormat={}{0:C},ConverterCulture=ru-RU}"/>
-                                                <DataGridTextColumn Header="Скидка" Binding="{Binding ProductArticleNumberNavigation.ProductDiscountAmount, StringFormat={}{0}%}"/>
-                                                <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding ProductArticleNumberNavigation.ProductQuantityInStock}"/>
-                                                <DataGridTextColumn Header="Кол-во в заказе" Binding="{Binding ProductCount}"/>
-                                            </DataGrid.Columns>
-                                            <DataGrid.Resources>
-                                                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                                                    <Setter Property="Background" Value="Transparent" />
-                                                </Style>
-                                            </DataGrid.Resources>
-                                            <DataGrid.RowStyle>
-                                                <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">
-                                                    <Setter Property="Background" Value="Transparent" />
-                                                    <!--  Triggers  -->
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsSelected" Value="True">
-                                                            <Setter Property="Background" Value="Transparent" />
-                                                            <Setter Property="BorderBrush" Value="Transparent" />
-                                                        </Trigger>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="Transparent" />
-                                                            <Setter Property="BorderBrush" Value="Transparent" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </DataGrid.RowStyle>
-                                        </DataGrid>
+                                    <TextBlock Margin="10 0" Text="{Binding Order.OrderDate, StringFormat=Дата заказа:{0:D}, ConverterCulture=ru-RU}"/>
+                                    <TextBlock Margin="10 0" Text="{Binding TotalCost, StringFormat=Итоговая стоимость:{0:C2}, ConverterCulture=ru-RU}"/>
+                                    <TextBlock Margin="10 0" Text="{Binding TotalDiscount, StringFormat=Итоговая скидка:{0:C2}, ConverterCulture=ru-RU}"/>
+                                    <TextBlock Margin="10 0" Text="{Binding Order.OrderFullname, StringFormat=ФИО: {0}}"/>
+                                    <TextBlock Margin="10 0" Text="{Binding Order.OrderCode, StringFormat=Код заказа:{0}}"/>
+                                    <Border CornerRadius="12" Background="LightGray" BorderBrush="Gray" Padding="3" Margin="3" BorderThickness="2" >
+                                        <Expander Header="Состав заказа"  Margin="10 5 0 10">
+                                            <DataGrid SelectionMode="Single" MinColumnWidth="120" GridLinesVisibility="Vertical" RowHeaderWidth="0" SelectionUnit="FullRow" ColumnWidth="Auto" IsReadOnly="True" Background="Transparent" AutoGenerateColumns="False" ItemsSource="{Binding OrderProducts}">
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="Имя" Binding="{Binding ProductArticleNumberNavigation.ProductNameNavigation.ProductName}"/>
+                                                    <DataGridTextColumn Header="Описание" Binding="{Binding ProductArticleNumberNavigation.ProductDescription}"/>
+                                                    <DataGridTextColumn Header="Производитель" Binding="{Binding ProductArticleNumberNavigation.ProductManufacturerNavigation.ProductManufacturer}"/>
+                                                    <DataGridTextColumn Header="Цена" Binding="{Binding ProductArticleNumberNavigation.ProductCost, StringFormat={}{0:C},ConverterCulture=ru-RU}"/>
+                                                    <DataGridTextColumn Header="Скидка" Binding="{Binding ProductArticleNumberNavigation.ProductDiscountAmount, StringFormat={}{0}%}"/>
+                                                    <DataGridTextColumn Header="Кол-во на складе" Binding="{Binding ProductArticleNumberNavigation.ProductQuantityInStock}"/>
+                                                    <DataGridTextColumn Header="Кол-во в заказе" Binding="{Binding ProductCount}"/>
+                                                </DataGrid.Columns>
+                                                <DataGrid.Resources>
+                                                    <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                    </Style>
+                                                </DataGrid.Resources>
+                                                <DataGrid.RowStyle>
+                                                    <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="{x:Type DataGridRow}">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <!--  Triggers  -->
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </DataGrid.RowStyle>
+                                            </DataGrid>
+                                    </Expander>
                                     </Border>
+
                                 </StackPanel>
                             </DockPanel>
                         </Border>

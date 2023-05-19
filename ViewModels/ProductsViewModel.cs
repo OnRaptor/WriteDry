@@ -8,6 +8,7 @@ using WriteDry.Services;
 using WriteDry.Utils;
 using WriteDry.ViewModels.Component;
 using WriteDry.ViewModels.Framework;
+using WriteDry.Views.Dialogs;
 
 namespace WriteDry.ViewModels
 {
@@ -107,6 +108,7 @@ namespace WriteDry.ViewModels
             var name = await dbContext.Pnames.AddAsync(new() { ProductName = result.name });
             await dbContext.SaveChangesAsync();
             result.product.ProductName = name.Entity.PnameId; // obtains id only after save changes
+            result.product.ProductArticleNumber = ArticleGenerator.GenerateArticle(dbContext.Products.Select(item => item.ProductArticleNumber));
             var product = await dbContext.Products.AddAsync(result.product);
             try
             {
@@ -126,10 +128,30 @@ namespace WriteDry.ViewModels
         }
         public async void EditProduct(ProductViewModel product)
         {
+            var canDelete = !dbContext.Orderproducts.Any(p => p.ProductArticleNumber == product.Product.ProductArticleNumber);
             var result = await _dialogManager.ShowDialogAsync(
-                _viewModelFactory.CreateEditProductViewModel(product)
+                _viewModelFactory.CreateEditProductViewModel(product, canDelete)
                 );
             if (result.Canceled) return;
+            else if (result.DeleteRequested)
+            {
+                var dialog = new YesNoDialog { Text = "Вы действительно хотите удалить продукт?" };
+                if (await dialog.ShowAsync() == ModernWpf.Controls.ContentDialogResult.Primary)
+                {
+                    try
+                    {
+                        dbContext.Products.Remove(product.Product);
+                        await dbContext.SaveChangesAsync();
+                        LoadProducts();
+                    }
+                    catch
+                    {
+                        await _dialogManager.ShowDialogAsync(
+                            _viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Нельзя удалить, так как товар в данный момент находится в существующем заказе")
+                            );
+                    }
+                }
+            }
             else
             {
                 product.Product.ProductDiscountAmount = (sbyte)result.Discount;

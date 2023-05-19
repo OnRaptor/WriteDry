@@ -21,6 +21,6 @@
         <TextBox ui:ControlHelper.Header="Кол-во на складе" Text="{Binding Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" ui:ControlHelper.PlaceholderText="Кол-во на складе"/>
         <TextBox ui:ControlHelper.Header="Скидка" Text="{Binding Discount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewTextInput="TextBox_PreviewTextInput" ui:ControlHelper.PlaceholderText="Скидка"/>
         <TextBox ui:ControlHelper.Header="Статус" Text="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ui:ControlHelper.PlaceholderText="Статус"/>
-        <Button IsEnabled="False" Foreground="White" Background="Red" HorizontalAlignment="Stretch">Удалить товар</Button>
+        <Button IsEnabled="{Binding CanDelete}" Foreground="White" Command="{s:Action DeleteProduct}" Background="Red" HorizontalAlignment="Stretch">Списать товар</Button>
     </ui:SimpleStackPanel>
 </ui:ContentDialog>

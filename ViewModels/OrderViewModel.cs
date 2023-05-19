@@ -45,6 +45,7 @@ namespace WriteDry.ViewModels
             CartItems = new BindableCollection<Cart.CartItem>(_clientService.UserCart.CartItems);
             CalculateStatistic();
             AuthorizedUser = UserFIO.GetFIO(_clientService.authorizedUser);
+            var t = db.Points.ToList();
             _points = db.Points.Select(point => new PointEx
             {
                 Point = point,

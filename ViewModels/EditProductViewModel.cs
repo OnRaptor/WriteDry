@@ -9,12 +9,14 @@ namespace WriteDry.ViewModels
         public int Discount { get; set; }
         public string Status { get; set; }
         public bool Canceled { get; set; }
+        public bool DeleteRequested { get; set; }
     }
     public class EditProductViewModel : DialogScreen<EditProductDialogResult>
     {
         public string Quantity { get; set; }
         public string Discount { get; set; }
         public string Status { get; set; }
+        public bool CanDelete{ get; set; }
 
         public void Apply()
         {
@@ -25,7 +27,10 @@ namespace WriteDry.ViewModels
                 Status = Status
             });
         }
-
+        public void DeleteProduct()
+        {
+            this.Close(new() { DeleteRequested = true });
+        }
         public void Cancel() => this.Close(new() { Canceled = true });
 
     }
@@ -38,6 +43,16 @@ namespace WriteDry.ViewModels
             vm.Quantity = product.Product.ProductQuantityInStock.ToString();
             vm.Discount = product.Product.ProductDiscountAmount.ToString();
             vm.Status = product.Product.ProductStatus ?? "Активный";
+            return vm;
+        }
+
+        public static EditProductViewModel CreateEditProductViewModel(this IViewModelFactory viewModelFactory, ProductViewModel product, bool CanDelete)
+        {
+            var vm = viewModelFactory.CreateEditProductViewModel();
+            vm.Quantity = product.Product.ProductQuantityInStock.ToString();
+            vm.Discount = product.Product.ProductDiscountAmount.ToString();
+            vm.Status = product.Product.ProductStatus ?? "Активный";
+            vm.CanDelete = CanDelete;
             return vm;
         }
     }

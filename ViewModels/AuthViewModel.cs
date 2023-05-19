@@ -46,16 +46,16 @@ namespace WriteDry.ViewModels
             else if (e.isGuest || e.newUserAuth != null)
                 _navigation.NavigateToProducts();
         }
-/*
+
 #if DEBUG
         protected override async void OnViewLoaded()
         {
             await Task.Delay(400);
-            Login = "loginDEpxl2018";
-            Password = "P6h4Jq";
+            Login = "root";
+            Password = "root";
             Auth();
             base.OnViewLoaded();
         }
-#endif*/
+#endif
     }
 }

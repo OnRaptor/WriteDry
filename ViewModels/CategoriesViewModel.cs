@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WriteDry.Services;
+using WriteDry.ViewModels.Component;
 using WriteDry.ViewModels.Framework;
 using WriteDry.Views.Dialogs;
 
@@ -42,6 +43,26 @@ namespace WriteDry.ViewModels
                 dbContext.Pcategories.Find(item.Id).CategoryName = dialog.Text;
                 dbContext.SaveChanges();
                 LoadCategories();
+            }
+        }
+
+        public async void DeleteCategory(Pcategory item)
+        {
+            var dialog = new YesNoDialog { Text = "Вы действительно хотите удалить категорию?" };
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+            {
+                try
+                {
+                    dbContext.Pcategories.Remove(item);
+                    await dbContext.SaveChangesAsync();
+                    LoadCategories();
+                }
+                catch
+                {
+                    await _dialogManager.ShowDialogAsync(
+                        _viewModelFactory.CreateMessageBoxViewModel("Ошибка", "Нельзя удалить, так как категория используется в существующем заказе")
+                        );
+                }
             }
         }
 
