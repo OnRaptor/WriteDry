@@ -11,7 +11,7 @@ namespace WriteDry.Utils
     {
         public static string GenerateArticle(IEnumerable<string> allExistringArticles)
         {
-            Xeger xeger = new Xeger(@"[A-Z][1-9]{3}[A-Z][6]");
+            Xeger xeger = new Xeger(@"[A-Z][0-9][1-9]{2}[A-Z][1-9]");
             var next = xeger.Generate();
             for (int i = 0; i < allExistringArticles.Count(); i++)
             {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
  
 
@@ -15,7 +16,10 @@ namespace WriteDry.Services
             clientService.OnAuthStateChanged += HandleAuthStateChanged;
             db = applicationContext;
         }
-
+        public void LoadOrders()
+        {
+            Orders = db.Orders.ToList();
+        }
         private void HandleAuthStateChanged(object sender, ClientService.AuthArgs e)
         {
             if (!e.IsAdmin) return;

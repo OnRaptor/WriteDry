@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
- 
+
 using WriteDry.Services;
 using WriteDry.Utils;
 using WriteDry.ViewModels.Component;
@@ -10,11 +10,11 @@ using WriteDry.ViewModels.Framework;
 
 namespace WriteDry.ViewModels
 {
-    public class TypeItem 
-    { 
+    public class TypeItem
+    {
         public string Title { get; set; }
 
-        public ItemTypeProduct type { get; set; }
+        public ItemTypeProduct Type { get; set; }
     }
     public enum ItemTypeProduct
     {
@@ -27,6 +27,7 @@ namespace WriteDry.ViewModels
         public int MaxOrdersCount { get; set; }
         public SortItem SelectedSort { get; set; } = new SortItem { SortProduct = SortProduct.Desc };
         public FilterItem SelectedFilter { get; set; } = new FilterItem { FilterProduct = FilterProduct.All };
+        public TypeItem SelectedTypeProduct { get; set; } = new TypeItem { Type = ItemTypeProduct.New, Title="Только новые" };
         public BindableCollection<OrderItemViewModel> Orders { get; set; }
 
         private AdminService adminService;
@@ -47,13 +48,41 @@ namespace WriteDry.ViewModels
             if (propertyName == nameof(SelectedFilter))
             {
                 ApplyFilter();
+                ApplyProductType();
                 ApplySort();
             }
             else if (propertyName == nameof(SelectedSort))
+            {
+                ApplyProductType();
                 ApplySort();
+            }
+            else if (propertyName == nameof(SelectedTypeProduct))
+            {
+                ApplyFilter();
+                ApplyProductType();
+                ApplySort();
+                CalculateMaxOrdersCount();
+            }
+
             base.OnPropertyChanged(propertyName);
         }
-
+        public void CalculateMaxOrdersCount()
+        {
+            MaxOrdersCount =
+                SelectedTypeProduct.Type == ItemTypeProduct.New ?
+                _ordersCache.Where(item => item.OrderStatus == "Новый").Count() :
+                _ordersCache.Where(item => item.OrderStatus == "Списан").Count();
+        }
+        public void ApplyProductType()
+        {
+            if (Orders != null)
+                Orders = new BindableCollection<OrderItemViewModel>(Orders.Where(item => item.CurrentStatus == (SelectedTypeProduct.Type == ItemTypeProduct.New ? 0 : 1)));
+            else
+            {
+                LoadOrdersToViewItems();
+                Orders = new BindableCollection<OrderItemViewModel>(Orders.Where(item => item.CurrentStatus == (SelectedTypeProduct.Type == ItemTypeProduct.New ? 0 : 1)));
+            }
+        }
         public void ApplySearch()
         {
             OrderItemViewModel? item = null;
@@ -114,6 +143,8 @@ namespace WriteDry.ViewModels
                 return;
             order.OrderStatus = newStatus.Title;
             dbContext.SaveChanges();
+            adminService.LoadOrders();
+            OnViewLoaded();
         }
         private void LoadOrdersToViewItems() => Orders = new BindableCollection<OrderItemViewModel>(_orderItemsCache);
         private void LoadOrdersToViewItems(List<OrderItemViewModel> items) => Orders = new BindableCollection<OrderItemViewModel>(items);
@@ -121,7 +152,7 @@ namespace WriteDry.ViewModels
         {
             UserName = UserFIO.GetFIO(adminService.AuthorizedUser);
             _ordersCache = adminService.Orders;
-            MaxOrdersCount = _ordersCache.Count;
+            CalculateMaxOrdersCount();
             Orders = new BindableCollection<OrderItemViewModel>(_ordersCache.Select(
                 item => vmFactory.CreateOrderItemViewModel(
                     item,
@@ -131,6 +162,9 @@ namespace WriteDry.ViewModels
                     )
             ));
             _orderItemsCache = Orders.ToList();
+            ApplyFilter();
+            ApplyProductType();
+            ApplySort();
         }
     }
 }

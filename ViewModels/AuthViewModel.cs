@@ -47,14 +47,11 @@ namespace WriteDry.ViewModels
                 _navigation.NavigateToProducts();
         }
 
-#if DEBUG
+#if DEBUGAUTOAUTH
         protected override async void OnViewLoaded()
         {
-            await Task.Delay(400);
-            Login = "root";
-            Password = "root";
-            Auth();
-            base.OnViewLoaded();
+            await Task.Delay(500);
+            await _clientService.Login("root", "root");
         }
 #endif
     }

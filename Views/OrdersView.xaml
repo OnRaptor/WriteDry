@@ -41,16 +41,16 @@
                     </TextBox.InputBindings>
                 </TextBox>
                 <ComboBox 
-                    SelectedItem="{Binding SelectedSort}"
+                    SelectedItem="{Binding SelectedTypeProduct}"
                     DisplayMemberPath="Title"
                     ui:ControlHelper.PlaceholderText="Отображение" Width="135">
-                    <vm:TypeItem Title="Только новые" type="New"/>
-                    <vm:TypeItem Title="Только завершенные" type="Finished"/>
+                    <vm:TypeItem Title="Только новые" Type="New"/>
+                    <vm:TypeItem Title="Только завершенные" Type="Finished"/>
                 </ComboBox>
                 <ComboBox 
                     SelectedItem="{Binding SelectedSort}"
                     DisplayMemberPath="Title"
-                    ui:ControlHelper.PlaceholderText="Сортировка" Width="120">
+                    ui:ControlHelper.PlaceholderText="Сортировка" Width="150">
                     <vm:SortItem Title="По возрастанию" SortProduct="Asc"/>
                     <vm:SortItem Title="По убыванию" SortProduct="Desc"/>
                 </ComboBox>
@@ -73,7 +73,7 @@
                             <DockPanel LastChildFill="True">
                                 <ui:SimpleStackPanel Spacing="5" DockPanel.Dock="Right">
                                     <DatePicker ToolTipService.ToolTip="Дата доставки" ToolTipService.IsEnabled="True" s:View.ActionTarget="{Binding}" SelectedDateChanged="{s:Action DateChanged}"  SelectedDate="{Binding DeliveryDate, Mode=OneWay}" ui:ControlHelper.PlaceholderText="Дата доставки"/>
-                                    <Button Background="Red" Foreground="White">Завершить заказ</Button>
+                                    <Button Visibility="{Binding ShouldDisplayDiscardButton, Converter={x:Static s:BoolToVisibilityConverter.Instance}}" Command="{s:Action DiscardItem}" s:View.ActionTarget="{Binding}" Background="Red" Foreground="White">Завершить заказ</Button>
                                 </ui:SimpleStackPanel>
                                 <StackPanel>
                                     <TextBlock Margin="10 0" Text="{Binding Order.OrderDate, StringFormat=Дата заказа:{0:D}, ConverterCulture=ru-RU}"/>

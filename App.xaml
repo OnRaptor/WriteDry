@@ -9,7 +9,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemeResources AccentColor="#498c51" RequestedTheme="Light"/>
                 <ui:XamlControlsResources />
-                
                 <s:ApplicationLoader>
                     <s:ApplicationLoader.Bootstrapper>
                         <local:Bootstrapper/>

@@ -38,7 +38,7 @@
                                 <TextBlock Text="{Binding CategoryName}" VerticalAlignment="Center" FontSize="22"/>
                                 <ui:SimpleStackPanel Spacing="5" Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Command="{s:Action EditCategory}" CommandParameter="{Binding}">Редактировать</Button>
-                                    <Button Command="{s:Action DeleteProvider}" CommandParameter="{Binding}">
+                                    <Button Command="{s:Action DeleteCategory}" CommandParameter="{Binding}">
                                         <ui:SymbolIcon Symbol="Delete"/>
                                     </Button>
                                 </ui:SimpleStackPanel>

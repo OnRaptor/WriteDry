@@ -8,17 +8,16 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DebugAutoAuth|Any CPU = DebugAutoAuth|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{75584110-F6AD-42E8-84A7-2EAED560FD6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{75584110-F6AD-42E8-84A7-2EAED560FD6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75584110-F6AD-42E8-84A7-2EAED560FD6B}.DebugAutoAuth|Any CPU.ActiveCfg = DebugAutoAuth|Any CPU
+		{75584110-F6AD-42E8-84A7-2EAED560FD6B}.DebugAutoAuth|Any CPU.Build.0 = DebugAutoAuth|Any CPU
 		{75584110-F6AD-42E8-84A7-2EAED560FD6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75584110-F6AD-42E8-84A7-2EAED560FD6B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02613E6F-B28D-41D7-8A8E-BFCE227B960F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02613E6F-B28D-41D7-8A8E-BFCE227B960F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02613E6F-B28D-41D7-8A8E-BFCE227B960F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02613E6F-B28D-41D7-8A8E-BFCE227B960F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

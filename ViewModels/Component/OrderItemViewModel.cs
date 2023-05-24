@@ -26,10 +26,9 @@ namespace WriteDry.ViewModels.Component
         public float TotalCost { get; set; }
         public float TotalDiscount { get; set; }
         public DateTime DeliveryDate => Order.OrderDate.ToDateTime(TimeOnly.MinValue);
-        public bool ShouldDisplayOrderProducts { get; set; }
+        public bool ShouldDisplayDiscardButton => CurrentStatus == 0; // to more simple way to impl in view 
         public Brush DisplayedColor { get; set; }
         public int CurrentStatus { get; set; }
-        public void ToggleDisplayOrderProducts() => ShouldDisplayOrderProducts = !ShouldDisplayOrderProducts;
 
         public OnDateChanged onDateChanged;
         public OnStatusChange onStatusChange;
@@ -44,9 +43,13 @@ namespace WriteDry.ViewModels.Component
 
         public void StatusChanged(object sender, SelectionChangedEventArgs args)
         {
-
             if ((sender as Control).IsLoaded)
                 onStatusChange?.Invoke(this, (OrderStatusItem)args.AddedItems[0]); //Execute delegate from main VM
+        }
+
+        public void DiscardItem()
+        {
+            onStatusChange?.Invoke(this, new OrderStatusItem { IsNew=false, Title="Списан" });
         }
         public void Init()
         {

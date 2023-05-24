@@ -9,7 +9,7 @@
     
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     
-    <Configurations>Debug;Release;linux</Configurations>
+    <Configurations>Debug;Release;linux;DebugAutoAuth</Configurations>
     
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
